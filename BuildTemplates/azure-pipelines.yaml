@@ -45,8 +45,8 @@ jobs:
           inputs:
             connectionType: 'Azure Resource Manager'
             azureSubscription: 'Az CLI'
-            azureResourceGroup: 'celcoin-aks'
-            kubernetesCluster: 'celcoin-k8s-cluster'
+            azureResourceGroup: 'saudeid-aks'
+            kubernetesCluster: 'saudeid-k8s-cluster'
             useClusterAdmin: true
             namespace: ${{ parameters.namespace }}
             command: 'upgrade'
@@ -63,7 +63,7 @@ jobs:
           displayName: 'Build an image'
           inputs:
             azureSubscription: 'Microservices - Service Principal'
-            azureContainerRegistry: '{"loginServer":"celcoinregistry.azurecr.io", "id" : "/subscriptions/b3a6aac8-c006-4ed2-abd9-cd47965f5947/resourceGroups/celcoin-aks/providers/Microsoft.ContainerRegistry/registries/CelcoinRegistry"}'
+            azureContainerRegistry: '{"loginServer":"saudeidregistry.azurecr.io", "id" : "/subscriptions/b3a6aac8-c006-4ed2-abd9-cd47965f5947/resourceGroups/saudeid-aks/providers/Microsoft.ContainerRegistry/registries/saudeidRegistry"}'
             dockerFile: gatling/Dockerfile-gatling
             includeLatestTag: true
             containerName: teste
@@ -71,4 +71,4 @@ jobs:
         - task: Bash@3
           inputs:
             targetType: 'inline'
-            script: 'docker run celcoinregistry.azurecr.io/gatling:latest'
+            script: 'docker run saudeidregistry.azurecr.io/gatling:latest'
