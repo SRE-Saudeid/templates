@@ -50,7 +50,11 @@ jobs:
           displayName: 'Build an image'
           inputs:
             azureSubscription: 'Microservices - Service Principal'
+<<<<<<< HEAD
             azureContainerRegistry: '{"loginServer":"saudeidregistry.azurecr.io", "id" : "/subscriptions/b3a6aac8-c006-4ed2-abd9-cd47965f5947/resourceGroups/saudeid-aks/providers/Microsoft.ContainerRegistry/registries/SaudeidRegistry"}'
+=======
+            azureContainerRegistry: '{"loginServer":"saudeidregistry.azurecr.io", "id" : "/subscriptions/b3a6aac8-c006-4ed2-abd9-cd47965f5947/resourceGroups/saudeid-aks/providers/Microsoft.ContainerRegistry/registries/saudeidRegistry"}'
+>>>>>>> 7f25868a33e71baefcddad87674ae14c52a5b530
             dockerFile: Dockerfile
             includeLatestTag: true
             additionalImageTags: $(Environment.Name)-$(Build.BuildId)
@@ -58,7 +62,11 @@ jobs:
           displayName: 'Push an image'
           inputs:
             azureSubscription: 'Microservices - Service Principal'
+<<<<<<< HEAD
             azureContainerRegistry: '{"loginServer":"saudeidregistry.azurecr.io", "id" : "/subscriptions/b3a6aac8-c006-4ed2-abd9-cd47965f5947/resourceGroups/saudeid-aks/providers/Microsoft.ContainerRegistry/registries/SaudeidRegistry"}'
+=======
+            azureContainerRegistry: '{"loginServer":"saudeidregistry.azurecr.io", "id" : "/subscriptions/b3a6aac8-c006-4ed2-abd9-cd47965f5947/resourceGroups/saudeid-aks/providers/Microsoft.ContainerRegistry/registries/saudeidRegistry"}'
+>>>>>>> 7f25868a33e71baefcddad87674ae14c52a5b530
             action: 'Push an image'
             includeLatestTag: true
             additionalImageTags: $(Environment.Name)-$(Build.BuildId)
