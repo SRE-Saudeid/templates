@@ -1,0 +1,41 @@
+# Repo: templates/
+# File: azure-pipelines.yml
+
+resources:
+  repositories:
+    - repository: Pipelines
+      type: git
+      name: Pipelines
+
+
+stages:
+- stage: Development
+  jobs:
+  - template: BuildTemplates/dev-dotnet-build.yaml@Pipelines
+    parameters:
+        namespace: 'teste'
+        release: 'dev-sample-helmchart'
+        stage: 'Development'
+        environment: 'dev'
+        resourcegroup: 'celcoin-aks'
+        cluster: 'celcoin-k8s-cluster'
+- stage: Homologation
+  jobs:
+  - template: BuildTemplates/dev-dotnet-build.yaml@Pipelines
+    parameters:
+        namespace: 'teste'
+        release: 'hml-sample-helmchart'
+        stage: 'Homologation'
+        environment: 'hml'
+        resourcegroup: 'celcoin-aks'
+        cluster: 'celcoin-k8s-cluster'
+- stage: Production
+  jobs:
+  - template: BuildTemplates/dev-dotnet-build.yaml@Pipelines
+    parameters:
+        namespace: 'teste'
+        release: 'prod-sample-helmchart'
+        stage: 'Production'
+        environment: 'prod'
+        resourcegroup: 'prod-celcoin-aks'
+        cluster: 'prod-celcoin-k8s-cluster'
