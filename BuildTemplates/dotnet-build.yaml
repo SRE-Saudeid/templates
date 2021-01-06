@@ -50,7 +50,7 @@ jobs:
           displayName: 'Build an image'
           inputs:
             azureSubscription: 'Microservices - Service Principal'
-            azureContainerRegistry: '{"loginServer":"celcoinregistry.azurecr.io", "id" : "/subscriptions/b3a6aac8-c006-4ed2-abd9-cd47965f5947/resourceGroups/celcoin-aks/providers/Microsoft.ContainerRegistry/registries/CelcoinRegistry"}'
+            azureContainerRegistry: '{"loginServer":"saudeidregistry.azurecr.io", "id" : "/subscriptions/b3a6aac8-c006-4ed2-abd9-cd47965f5947/resourceGroups/saudeid-aks/providers/Microsoft.ContainerRegistry/registries/SaudeidRegistry"}'
             dockerFile: Dockerfile
             includeLatestTag: true
             additionalImageTags: $(Environment.Name)-$(Build.BuildId)
@@ -58,7 +58,7 @@ jobs:
           displayName: 'Push an image'
           inputs:
             azureSubscription: 'Microservices - Service Principal'
-            azureContainerRegistry: '{"loginServer":"celcoinregistry.azurecr.io", "id" : "/subscriptions/b3a6aac8-c006-4ed2-abd9-cd47965f5947/resourceGroups/celcoin-aks/providers/Microsoft.ContainerRegistry/registries/CelcoinRegistry"}'
+            azureContainerRegistry: '{"loginServer":"saudeidregistry.azurecr.io", "id" : "/subscriptions/b3a6aac8-c006-4ed2-abd9-cd47965f5947/resourceGroups/saudeid-aks/providers/Microsoft.ContainerRegistry/registries/SaudeidRegistry"}'
             action: 'Push an image'
             includeLatestTag: true
             additionalImageTags: $(Environment.Name)-$(Build.BuildId)

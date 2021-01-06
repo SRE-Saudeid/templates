@@ -17,8 +17,8 @@ stages:
         release: 'dev-sample-helmchart'
         stage: 'Development'
         environment: 'dev'
-        resourcegroup: 'celcoin-aks'
-        cluster: 'celcoin-k8s-cluster'
+        resourcegroup: 'saudeid-aks'
+        cluster: 'saudeid-k8s-cluster'
 - stage: Homologation
   jobs:
   - template: BuildTemplates/dev-dotnet-build.yaml@Pipelines
@@ -27,8 +27,8 @@ stages:
         release: 'hml-sample-helmchart'
         stage: 'Homologation'
         environment: 'hml'
-        resourcegroup: 'celcoin-aks'
-        cluster: 'celcoin-k8s-cluster'
+        resourcegroup: 'saudeid-aks'
+        cluster: 'saudeid-k8s-cluster'
 - stage: Production
   jobs:
   - template: BuildTemplates/dev-dotnet-build.yaml@Pipelines
@@ -37,5 +37,5 @@ stages:
         release: 'prod-sample-helmchart'
         stage: 'Production'
         environment: 'prod'
-        resourcegroup: 'prod-celcoin-aks'
-        cluster: 'prod-celcoin-k8s-cluster'
+        resourcegroup: 'prod-saudeid-aks'
+        cluster: 'prod-saudeid-k8s-cluster'
