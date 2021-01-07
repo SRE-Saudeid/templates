@@ -58,6 +58,17 @@ jobs:
         #     chartPath: '$(System.DefaultWorkingDirectory)/templates/helm'
         #     releaseName: '${{ parameters.release }}'
         #     waitForExecution: false
+        # - task: HelmDeploy@0
+        #   inputs:
+        #     connectionType: 'Kubernetes Service Connection'
+        #     kubernetesServiceConnection: 'GCP - dev-Kubernetes'
+        #     namespace: '${{ parameters.namespace }}'
+        #     command: 'upgrade'
+        #     chartType: 'FilePath'
+        #     chartPath: '$(System.DefaultWorkingDirectory)/templates/helm'
+        #     releaseName: '${{ parameters.release }}'
+        #     force: true
+        #     waitForExecution: false
         - task: HelmDeploy@0
           inputs:
             connectionType: 'Kubernetes Service Connection'
@@ -67,5 +78,6 @@ jobs:
             chartType: 'FilePath'
             chartPath: '$(System.DefaultWorkingDirectory)/templates/helm'
             releaseName: '${{ parameters.release }}'
-            force: true
+            #install: false
             waitForExecution: false
+            arguments: '--install --force'
