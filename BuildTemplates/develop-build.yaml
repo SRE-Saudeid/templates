@@ -9,7 +9,6 @@ jobs:
       deploy:
         steps:
         - checkout: self
-        - checkout: templates
         - task: Bash@3
           inputs:
             targetType: 'inline'
