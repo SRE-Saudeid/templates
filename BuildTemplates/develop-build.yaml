@@ -34,7 +34,7 @@ jobs:
             repository: '$(Build.Repository.Name)'
             command: 'buildAndPush'
             Dockerfile: '**/Dockerfile'
-            tags: '$(Environment.Name)-$(BuildId.BuildId)'
+            tags: '$(Environment.Name)-$(Build.BuildId)'
         - task: HelmDeploy@0
           inputs:
             connectionType: 'Kubernetes Service Connection'
