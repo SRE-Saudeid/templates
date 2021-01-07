@@ -38,14 +38,14 @@ jobs:
         - task: Docker@2
           inputs:
             containerRegistry: 'SaudeID-PRD Container Registry'
-            repository: '$(Build.Repository.Name)'
+            repository: 'saudeid-prd'
             command: 'build'
             Dockerfile: '**/Dockerfile'
             tags: '$(Environment.Name)-$(Build.BuildId)'
         - task: Docker@2
           inputs:
             containerRegistry: 'SaudeID-PRD Container Registry'
-            repository: '$(Build.Repository.Name)'
+            repository: 'saudeid-prd'
             command: 'push'
             tags: '$(Environment.Name)-$(Build.BuildId)'
         - task: HelmDeploy@0
