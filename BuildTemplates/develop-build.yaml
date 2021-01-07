@@ -21,7 +21,7 @@ jobs:
             workingDirectory: '$(System.DefaultWorkingDirectory)'
         - task: HelmInstaller@0
           inputs:
-            helmVersion: '3.0.3'
+            helmVersion: '3.4.2'
             checkLatestHelmVersion: false
             installKubectl: true
         - task: HelmDeploy@0
@@ -53,4 +53,3 @@ jobs:
             install: true
             waitForExecution: false
             force: true
-            recreate: true
