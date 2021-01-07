@@ -53,3 +53,4 @@ jobs:
             install: true
             waitForExecution: false
             force: true
+            recreate: true
