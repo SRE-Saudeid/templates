@@ -69,4 +69,3 @@ jobs:
             releaseName: '${{ parameters.release }}'
             force: true
             waitForExecution: false
-            
