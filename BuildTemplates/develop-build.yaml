@@ -28,13 +28,6 @@ jobs:
           inputs:
             command: 'package'
             chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/'
-        # - task: Docker@2
-        #   inputs:
-        #     containerRegistry: 'SaudeID-PRD Container Registry'
-        #     repository: '$(Build.Repository.Name)'
-        #     command: 'buildAndPush'
-        #     Dockerfile: '**/Dockerfile'
-        #     tags: '$(Environment.Name)-$(Build.BuildId)'
         - task: Docker@2
           inputs:
             containerRegistry: 'SaudeID-PRD Container Registry'
@@ -48,27 +41,6 @@ jobs:
             repository: 'saudeid-prd/b2c/$(Build.Repository.Name)'
             command: 'push'
             tags: '$(Environment.Name)-$(Build.BuildId)'
-        # - task: HelmDeploy@0
-        #   inputs:
-        #     connectionType: 'Kubernetes Service Connection'
-        #     kubernetesServiceConnection: 'GCP - dev-Kubernetes'
-        #     namespace: '${{ parameters.namespace }}'
-        #     command: 'install'
-        #     chartType: 'FilePath'
-        #     chartPath: '$(System.DefaultWorkingDirectory)/templates/helm'
-        #     releaseName: '${{ parameters.release }}'
-        #     waitForExecution: false
-        # - task: HelmDeploy@0
-        #   inputs:
-        #     connectionType: 'Kubernetes Service Connection'
-        #     kubernetesServiceConnection: 'GCP - dev-Kubernetes'
-        #     namespace: '${{ parameters.namespace }}'
-        #     command: 'upgrade'
-        #     chartType: 'FilePath'
-        #     chartPath: '$(System.DefaultWorkingDirectory)/templates/helm'
-        #     releaseName: '${{ parameters.release }}'
-        #     force: true
-        #     waitForExecution: false
         - task: HelmDeploy@0
           inputs:
             connectionType: 'Kubernetes Service Connection'
@@ -78,6 +50,6 @@ jobs:
             chartType: 'FilePath'
             chartPath: '$(System.DefaultWorkingDirectory)/templates/helm'
             releaseName: '${{ parameters.release }}'
-            #install: false
+            install: true
             waitForExecution: false
-            arguments: '--install --force'
+            force: true
