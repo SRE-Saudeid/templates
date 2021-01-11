@@ -6,7 +6,7 @@ metadata:
   labels:
     deployment: {{environment}}-{{Name}}
     app: {{environment}}-{{Name}}
-  namespace : devops-test
+  namespace : {{namespace}}
   name: {{environment}}{{Name}}
 spec:
   replicas: 3
@@ -36,7 +36,7 @@ spec:
               - key: agentpool
                 operator: In
                 values:
-                - lxnode
+                - general
       containers:
         - name: {{Name}}
           image: gcr.io/saudeid-prd/b2c/{{Name}}:{{environment}}-{{BuildId}}
