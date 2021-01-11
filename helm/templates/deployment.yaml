@@ -33,7 +33,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: agentpool
+              - key: nodepool
                 operator: In
                 values:
                 - general
