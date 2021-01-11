@@ -36,7 +36,7 @@ spec:
               - key: agentpool
                 operator: In
                 values:
-                - lxnode
+                - general
       containers:
         - name: {{Name}}
           image: gcr.io/saudeid-prd/b2c/{{Name}}:{{environment}}-{{BuildId}}
