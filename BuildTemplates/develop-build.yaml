@@ -52,4 +52,4 @@ jobs:
             releaseName: '${{ parameters.release }}'
             install: true
             waitForExecution: false
-            force: true
+            force: false
