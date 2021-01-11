@@ -6,7 +6,6 @@ metadata:
   labels:
     app: {{environment}}-{{Name}}
 spec:
-  clusterIP: None
   ports:
   - port: 3001
     name: http
