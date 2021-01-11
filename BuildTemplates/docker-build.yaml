@@ -12,7 +12,7 @@ jobs:
         - task: Bash@3
           inputs:
             targetType: 'inline'
-            script: 'sed -i ''s/{{Name}}/${{ parameters.app }}/g'' helm/*/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' helm/*/*.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' helm/*/templates/deployment.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' helm/*/templates/deployment.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' Dockerfile' 
+            script: 'sed -i ''s/{{Name}}/${{ parameters.namespace }}/g'' helm/*/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' helm/*/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' helm/*/*.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' helm/*/templates/deployment.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' helm/*/templates/deployment.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' Dockerfile' 
             workingDirectory: '$(System.DefaultWorkingDirectory)'
         - task: HelmInstaller@0
           inputs:
