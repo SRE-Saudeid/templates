@@ -20,4 +20,4 @@ spec:
     - destination:
         host: {{environment}}{{Name}}
         port:
-          number: 3001
+          number: 80
