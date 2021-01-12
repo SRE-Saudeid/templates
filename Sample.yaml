@@ -3,39 +3,38 @@
 
 resources:
   repositories:
-    - repository: Pipelines
+    - repository: templates
       type: git
-      name: Pipelines
+      name: templates
 
 
 stages:
 - stage: Development
   jobs:
-  - template: BuildTemplates/dev-dotnet-build.yaml@Pipelines
+  - template: BuildTemplates/develop-build.yaml@templates
     parameters:
-        namespace: 'teste'
-        release: 'dev-sample-helmchart'
+        namespace: 'bizdev'
+        release: 'dev-tyto-datalake-consumer'
         stage: 'Development'
         environment: 'dev'
-        resourcegroup: 'saudeid-aks'
-        cluster: 'saudeid-k8s-cluster'
+        app: 'tyto-datalake-consumer'
 - stage: Homologation
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
   jobs:
-  - template: BuildTemplates/dev-dotnet-build.yaml@Pipelines
+  - template: BuildTemplates/develop-build.yaml@templates
     parameters:
         namespace: 'teste'
-        release: 'hml-sample-helmchart'
+        release: 'hml-tyto-datalake-consumer'
         stage: 'Homologation'
         environment: 'hml'
-        resourcegroup: 'saudeid-aks'
-        cluster: 'saudeid-k8s-cluster'
+        app: 'tyto-datalake-consumer'
 - stage: Production
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
   jobs:
-  - template: BuildTemplates/dev-dotnet-build.yaml@Pipelines
+  - template: BuildTemplates/develop-build.yaml@templates
     parameters:
         namespace: 'teste'
-        release: 'prod-sample-helmchart'
+        release: 'prod-tyto-datalake-consumer'
         stage: 'Production'
         environment: 'prod'
-        resourcegroup: 'prod-saudeid-aks'
-        cluster: 'prod-saudeid-k8s-cluster'
+        app: 'tyto-datalake-consumer'
