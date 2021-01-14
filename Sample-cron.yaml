@@ -1,0 +1,54 @@
+# Repo: templates/
+# File: azure-pipelines.yml
+
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: templates
+
+
+stages:
+- stage: Development
+  jobs:
+  - template: BuildTemplates/develop-build.yaml@templates
+    parameters:
+        namespace: 'bizdev'
+        release: 'dev-tyto-datalake-consumer'
+        stage: 'Development'
+        environment: 'dev'
+        app: 'tyto-datalake-consumer'
+        cronjob: 
+# - stage: Homologation
+#   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
+#   jobs:
+#   - template: BuildTemplates/develop-build.yaml@templates
+#     parameters:
+#         namespace: 'teste'
+#         release: 'hml-tyto-datalake-consumer'
+#         stage: 'Homologation'
+#         environment: 'hml'
+#         app: 'tyto-datalake-consumer'
+#         cronjob: 
+- stage: Quality
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
+  jobs:
+  - template: BuildTemplates/qa-pipeline.yaml@templates
+    parameters:
+        namespace: 'bizdev'
+        release: 'qa-tyto-datalake-consumer'
+        stage: 'Quality'
+        environment: 'qa'
+        app: 'tyto-datalake-consumer'
+        cronjob: 
+- stage: Production
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
+  jobs:
+  - template: BuildTemplates/develop-build.yaml@templates
+    parameters:
+        namespace: 'bizdev'
+        release: 'prod-tyto-datalake-consumer'
+        stage: 'Production'
+        environment: 'prod'
+        app: 'tyto-datalake-consumer'
+        cronjob: 
