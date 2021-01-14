@@ -4,11 +4,11 @@
 # https://aka.ms/yaml
 
 jobs:
-- deployment: Production
-  displayName: Production
+- deployment: ${{ parameters.stage }}
+  displayName: ${{ parameters.stage }}
   pool:
     vmImage: 'ubuntu-latest'
-  environment: prod
+  environment: ${{ parameters.environment }}
   strategy:
     runOnce:
       deploy:
