@@ -36,7 +36,7 @@ jobs:
         - task: Kubernetes@1
           inputs:
             connectionType: 'Kubernetes Service Connection'
-            kubernetesServiceEndpoint: GCP - $(Environment.Name)-Kubernetes
+            kubernetesServiceEndpoint: 'GCP - $(Environment.Name)-Kubernetes'
             namespace: ${{ parameters.namespace }}
             command: 'apply'
             arguments: '-f $(System.DefaultWorkingDirectory)/templates/helm/cronjob.yaml'
