@@ -40,7 +40,7 @@ jobs:
         - task: HelmDeploy@0
           inputs:
             connectionType: 'Kubernetes Service Connection'
-            kubernetesServiceConnection: 'GCP - qa-Kubernetes'
+            kubernetesServiceConnection: 'GCP - $(Environment.Name)-Kubernetes'
             namespace: '${{ parameters.namespace }}'
             command: 'upgrade'
             chartType: 'FilePath'

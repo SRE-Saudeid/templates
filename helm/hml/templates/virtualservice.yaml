@@ -18,6 +18,6 @@ spec:
       uri: "/"
     route:
     - destination:
-        host: {{environment}}{{Name}}
+        host: {{environment}}-{{Name}}
         port:
           number: 80

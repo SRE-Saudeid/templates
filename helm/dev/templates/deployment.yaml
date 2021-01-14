@@ -7,7 +7,7 @@ metadata:
     deployment: {{environment}}-{{Name}}
     app: {{environment}}-{{Name}}
   namespace : {{namespace}}
-  name: {{environment}}{{Name}}
+  name: {{environment}}-{{Name}}
 spec:
   replicas: 1
   selector:
