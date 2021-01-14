@@ -12,8 +12,6 @@ spec:
   - match:
     - uri:
         prefix: "/{{Name}}/"
-    - uri:
-        prefix: "/{{Name}}"
     rewrite:
       uri: "/"
     route:
