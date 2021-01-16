@@ -12,4 +12,4 @@ spec:
           - name: {{environment}}-{{Name}}
             image: gcr.io/saudeid-prd/b2c/{{Name}}:{{environment}}-{{BuildId}}
             imagePullPolicy: Always
-          restartPolicy: OnFailure
+          restartPolicy: Never
