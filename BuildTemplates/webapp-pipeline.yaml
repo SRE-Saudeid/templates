@@ -35,4 +35,4 @@ jobs:
         - task: GsutilRunner@0
           inputs:
             command: 'cp'
-            arguments: '-r ./out gs://dev-b2c-webapp'
+            arguments: '-r ./out gs://{{ parameters.bucket }}'

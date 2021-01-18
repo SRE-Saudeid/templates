@@ -1,0 +1,15 @@
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: templates
+
+
+stages:
+- stage: Development
+  jobs:
+  - template: BuildTemplates/develop-build.yaml@templates
+    parameters:
+        stage: 'Development'
+        environment: 'dev'
+        bucket: dev-b2c-webapp
