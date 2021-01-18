@@ -8,7 +8,7 @@ resources:
 stages:
 - stage: Development
   jobs:
-  - template: BuildTemplates/develop-build.yaml@templates
+  - template: BuildTemplates/webapp-pipeline.yaml@templates
     parameters:
         stage: 'Development'
         environment: 'dev'
