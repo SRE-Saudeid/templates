@@ -10,11 +10,29 @@ jobs:
         steps:
         - checkout: self
         - checkout: templates
-        - task: Npm@1
+        - task: DownloadSecureFile@1
+          name: gcptoken
           inputs:
-            command: 'install'
-            workingDir: '$(Build.Repository.Name)'
+            secureFile: 'gcp_token.json'
+        - script: cp $(gcptoken.secureFilePath) .
         - script: npm install
+          workingDirectory: .
         - script: npm run build
-        - script: npm install next
-        - script: ls
+          workingDirectory: .
+        - task: ArchiveFiles@2
+          inputs:
+            rootFolderOrFile: 'out'
+            includeRootFolder: true
+            archiveType: 'zip'
+            archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+            replaceExistingArchive: true
+        - task: PublishBuildArtifacts@1
+          inputs:
+            PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+            ArtifactName: 'drop'
+            publishLocation: 'Container'
+        - script: gcloud auth activate-service-account --key-file ./gcp_token.json
+        - task: GsutilRunner@0
+          inputs:
+            command: 'cp'
+            arguments: '-r ./out gs://dev-b2c-webapp'
