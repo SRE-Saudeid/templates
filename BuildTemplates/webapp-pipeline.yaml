@@ -16,12 +16,12 @@ jobs:
             secureFile: 'gcp_token.json'
         - script: cp $(gcptoken.secureFilePath) .
         - script: npm install
-          workingDirectory: .
+          workingDirectory: ./$(Build.Repository.Name)
         - script: npm run build
-          workingDirectory: .
+          workingDirectory: ./$(Build.Repository.Name)
         - task: ArchiveFiles@2
           inputs:
-            rootFolderOrFile: 'out'
+            rootFolderOrFile: './$(Build.Repository.Name)/out'
             includeRootFolder: true
             archiveType: 'zip'
             archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
@@ -35,4 +35,4 @@ jobs:
         - task: GsutilRunner@0
           inputs:
             command: 'cp'
-            arguments: '-r ./out gs://{{ parameters.bucket }}'
+            arguments: '-r ./$(Build.Repository.Name)/out gs://{{ parameters.bucket }}'
