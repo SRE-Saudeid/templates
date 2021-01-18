@@ -12,4 +12,4 @@ stages:
     parameters:
         stage: 'Development'
         environment: 'dev'
-        bucket: dev-b2c-webapp
+        bucket: 'dev-b2c-webapp'
