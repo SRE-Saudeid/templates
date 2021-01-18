@@ -35,4 +35,4 @@ jobs:
         - task: GsutilRunner@0
           inputs:
             command: 'cp'
-            arguments: '-r ./$(Build.Repository.Name)/out gs://$(Environment.Name)-$(System.TeamProject)-$(Build.Repository.Name)'
+            arguments: '-r ./$(Build.Repository.Name)/out gs://${{ parameters.bucket }}'
