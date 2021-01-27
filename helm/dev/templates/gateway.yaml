@@ -4,12 +4,16 @@ metadata:
   name: {{environment}}-{{Name}}-gateway
   namespace: {{namespace}}
 spec:
+spec:
   selector:
-    istio: ingressgateway # use istio default controller
+    istio: ingressgateway
   servers:
-  - port:
-      number: 80
-      name: http
-      protocol: HTTP
-    hosts:
-    - "*"
+  - hosts:
+    - '*'
+    port:
+      name: https
+      number: 443
+      protocol: HTTPS
+    tls:
+      credentialName: saudeid-selfsigned-credential
+      mode: SIMPLE
