@@ -4,7 +4,6 @@ metadata:
   name: {{environment}}-{{Name}}-gateway
   namespace: {{namespace}}
 spec:
-spec:
   selector:
     istio: ingressgateway
   servers:
