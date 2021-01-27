@@ -11,15 +11,10 @@ jobs:
         - checkout: self
         - checkout: templates
         - task: DownloadSecureFile@1
-          name: devgcptoken
+          name: $(Environment.Name)gcptoken
           inputs:
-            secureFile: 'dev-gcp_token.json'
-        - task: DownloadSecureFile@1
-          name: qagcptoken
-          inputs:
-            secureFile: 'qa-gcp_token.json'
-        - script: cp $(devgcptoken.secureFilePath) .
-        - script: cp $(qagcptoken.secureFilePath) .
+            secureFile: '$(Environment.Name)-gcp_token.json'
+        - script: cp $($(Environment.Name)gcptoken.secureFilePath) .
         - script: npm install
           workingDirectory: ./$(Build.Repository.Name)
         - script: npm run build
