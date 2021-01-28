@@ -25,6 +25,7 @@ jobs:
         - script: cp $(devgcptoken.secureFilePath) .
         - script: cp $(qagcptoken.secureFilePath) .
         - script: cp $(prodgcptoken.secureFilePath) .
+        - script: mv next.config.${{ parameters.environment }}.js next.config.js
         - script: npm install
           workingDirectory: ./$(Build.Repository.Name)
         - script: npm run build
