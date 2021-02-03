@@ -28,15 +28,15 @@ spec:
     spec:
       hostname: {{environment}}-{{Name}}
       subdomain: local  
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: nodepool
-                operator: In
-                values:
-                - general
+#      affinity:
+#        nodeAffinity:
+#          requiredDuringSchedulingIgnoredDuringExecution:
+#            nodeSelectorTerms:
+#            - matchExpressions:
+#              - key: nodepool
+#                operator: In
+#                values:
+#                - general
       containers:
         - name: {{Name}}
           image: gcr.io/saudeid-prd/b2c/{{Name}}:{{environment}}-{{BuildId}}
