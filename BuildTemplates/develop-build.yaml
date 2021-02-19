@@ -10,7 +10,7 @@ jobs:
         steps:
         - checkout: self
           clean: true
-        - checkout: templates
+        - checkout: git://Area-Engenharia/templates
           clean: true
         - task: Bash@3
           inputs:
