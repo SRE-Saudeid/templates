@@ -1,3 +1,10 @@
+parameters:
+- name: 'env'
+  type: object
+  default: 
+  - dev
+  - hml
+  - prod
 jobs:
   # stage: 'Development'
   # kubernetes: 'GCP - dev-Kubernetes'
@@ -5,13 +12,13 @@ jobs:
   displayName: ${{ parameters.stage }}
   pool:
     vmImage: 'ubuntu-latest'
-  ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
-    environment: dev
-  ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
-   environment: hml
-    - ${{ each release in variables['Build.SourceBranchName'] }}:
-        environment: prod
-#  environment: ${{ parameters.environment }}
+  # ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
+  #   environment: dev
+  # ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+  #  environment: hml
+#  ${{ each release in variables['Build.SourceBranchName'] }}:
+ ${{ each env in parameters.env }}:
+  environment: ${{ parameters.env }}
   strategy:
     runOnce:
       deploy:
