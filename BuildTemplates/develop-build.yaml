@@ -1,5 +1,5 @@
 parameters:
-  environment:
+- name: environment
   - key: 'hml'
     value: hml
   - key: 'prod'
