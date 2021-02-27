@@ -1,4 +1,4 @@
-parameters:
+variables:
   ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
     environment: dev
     stage: 'Development'
