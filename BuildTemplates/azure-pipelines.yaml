@@ -10,15 +10,7 @@ parameters:
   default: []
 - name: app
   default: []
-
-resources:
-  repositories:
-    - repository: templates
-      type: git
-      name: Area-Engenharia/develop-build.yaml
-      ref: refs/heads/dev
-      
-stages:
+    
 - stage: Development
   jobs:
   - template: BuildTemplates/develop-build.yaml@templates
