@@ -19,7 +19,7 @@ stages:
       parameters:
           environment: dev
           namespace: ${{ parameters.namespace }}
-          release: ${{parameters.environment}}-${{ parameters.app }}
+          release: ${{ parameters.environment }}-${{ parameters.app }}
           app: ${{ parameters.app }}
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
@@ -29,7 +29,7 @@ stages:
       parameters:
           environment: qa
           namespace: ${{ parameters.namespace }}
-          release: ${{parameters.environment}}-${{ parameters.app }}
+          release: ${{ parameters.environment }}-${{ parameters.app }}
           app: ${{ parameters.app }}
         
   - stage: Production
@@ -38,5 +38,5 @@ stages:
       parameters:
           environment: prod
           namespace: ${{ parameters.namespace }}
-          release: ${{parameters.environment}}-${{ parameters.app }}
+          release: ${{ parameters.environment }}-${{ parameters.app }}
           app: ${{ parameters.app }}
