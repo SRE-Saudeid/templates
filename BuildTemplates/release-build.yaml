@@ -10,9 +10,9 @@ parameters:
   default: []
 
 
-${{ each object in parameters.environment }}:
-  ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
-    environment: ${{ object }}
+-  ${{ each object in parameters.environment }}:
+     ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+       environment: ${{ object }}
 jobs:
   # kubernetes: 'GCP - dev-Kubernetes'
 - deployment: ${{ variables.stage }}
