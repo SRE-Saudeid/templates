@@ -1,14 +1,14 @@
 
 jobs:
-- ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
-  environment: dev
   # stage: 'Development'
   # kubernetes: 'GCP - dev-Kubernetes'
 - deployment: ${{ parameters.stage }}
   displayName: ${{ parameters.stage }}
   pool:
     vmImage: 'ubuntu-latest'
-  environment: ${{ parameters.environment }}
+- ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
+  environment: dev
+#  environment: ${{ parameters.environment }}
   strategy:
     runOnce:
       deploy:
