@@ -1,6 +1,7 @@
 jobs:
 - deployment: ${{ parameters.stage }}
   displayName: ${{ parameters.stage }}
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
   pool:
     vmImage: 'ubuntu-latest'
   environment: ${{ parameters.environment }}

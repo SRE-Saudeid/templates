@@ -1,73 +1,60 @@
-#$ Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# Repo: templates/
+# File: azure-pipelines.yml
+parameters:
+- name: environment
+  type: object
+  default: []
+- name: namespace
+  default: []
+#- name: release
+#  default: []
+- name: app
+  default: []
+    
+stages:
+- ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
+  - stage: Development
+    jobs:
+    - template: develop-build.yaml@templates
+      parameters:
+          environment: dev
+          namespace: ${{ parameters.namespace }}
+          release: dev-${{ parameters.app }}
+          app: ${{ parameters.app }}
 
-jobs:
-- deployment: DeployHTTPBlue
-  displayName: HTTP Blue
-  pool:
-    vmImage: 'ubuntu-latest'
-  environment: ${{ parameters.environment }}
-  strategy:
-    runOnce:
-      deploy:
-        steps:
-        - checkout: self
-        - task: HelmInstaller@0
-          inputs:
-            helmVersion: '3.0.0'
-            checkLatestHelmVersion: false
-            installKubectl: true
-        - task: Bash@3
-          inputs:
-            targetType: 'inline'
-            script: 'sed -i ''s/{{Name}}/$(Build.Repository.Name)/g'' modules/helm/*/templates/*.yaml && sed -i ''s/{{Name}}/$(Build.Repository.Name)/g'' modules/helm/*/*.yaml ' 
-            workingDirectory: '$(System.DefaultWorkingDirectory)'
-        - task: HelmDeploy@0
-          inputs:
-            command: 'package'
-            chartPath: '$(System.DefaultWorkingDirectory)/modules/helm/$(Build.Repository.Name)'
-        - task: SonarQubePrepare@4
-          inputs:
-            SonarQube: 'SonarQube'
-            scannerMode: 'CLI'
-            configMode: 'manual'
-            cliProjectKey: '7e58815fdbee18924e93b24fde3eaab5c3e366f5'
-            cliProjectName: '$(Build.Repository.Name)'
-            cliSources: '.'
-        - task: SonarQubeAnalyze@4
-        - task: SonarQubePublish@4
-          inputs:
-            pollingTimeoutSec: '300'
-        - task: HelmDeploy@0
-          inputs:
-            connectionType: 'Azure Resource Manager'
-            azureSubscription: 'Az CLI'
-            azureResourceGroup: 'saudeid-aks'
-            kubernetesCluster: 'saudeid-k8s-cluster'
-            useClusterAdmin: true
-            namespace: ${{ parameters.namespace }}
-            command: 'upgrade'
-            arguments: '--install'
-            chartType: 'FilePath'
-            chartPath: '$(System.DefaultWorkingDirectory)/modules/helm/$(Build.Repository.Name)'
-            releaseName: '${{ parameters.release }}'
-            waitForExecution: false
-        - task: Bash@3
-          inputs:
-            targetType: 'inline'
-            script: 'sleep 30'
-        - task: Docker@0
-          displayName: 'Build an image'
-          inputs:
-            azureSubscription: 'Microservices - Service Principal'
-            azureContainerRegistry: ''
-            dockerFile: gatling/Dockerfile-gatling
-            includeLatestTag: true
-            containerName: teste
-            imageName: gatling
-        - task: Bash@3
-          inputs:
-            targetType: 'inline'
-            script: 'docker run saudeidregistry.azurecr.io/gatling:latest'
+- ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
+  - stage: Quality
+    jobs:
+    - template: develop-build.yaml@templates
+      parameters:
+          environment: qa
+          namespace: ${{ parameters.namespace }}
+          release: qa-${{ parameters.app }}
+          app: ${{ parameters.app }}
+        
+  - stage: Production
+    jobs:
+    - template: develop-build.yaml@templates
+      parameters:
+          environment: prod
+          namespace: ${{ parameters.namespace }}
+          release: prod-${{ parameters.app }}
+          app: ${{ parameters.app }}
+- ${{ if contains(variables['Build.SourceBranchName'], 'hotfix') }}:        
+  - stage: Quality
+    jobs:
+    - template: develop-build.yaml@templates
+      parameters:
+          environment: qa
+          namespace: ${{ parameters.namespace }}
+          release: qa-${{ parameters.app }}
+          app: ${{ parameters.app }}
+        
+  - stage: Production
+    jobs:
+    - template: develop-build.yaml@templates
+      parameters:
+          environment: prod
+          namespace: ${{ parameters.namespace }}
+          release: prod-${{ parameters.app }}
+          app: ${{ parameters.app }}

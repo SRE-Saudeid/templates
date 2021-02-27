@@ -1,14 +1,12 @@
 parameters:
 - name: environment
   type: object
-  default: []
+  default: ['hml','prod']
 - name: namespace
   default: []
 - name: release
   default: []
 - name: app
-  default: []
-- name: stage
   default: []
 
 jobs:
@@ -17,7 +15,9 @@ jobs:
   displayName: ${{ variables.stage }}
   pool:
     vmImage: 'ubuntu-latest'
-  environment: ${{ parameters.environment }}
+  ${{ each object in parameters.environment }}:
+    ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+      environment: ${{ object }}
   strategy:
     runOnce:
       deploy:
@@ -44,13 +44,19 @@ jobs:
           inputs:
             containerRegistry: 'SaudeID-PRD Container Registry'
             repository: 'saudeid-prd/${{ parameters.namespace }}/$(Build.Repository.Name)'
-            command: 'buildAndPush'
+            command: 'build'
             Dockerfile: '**/Dockerfile'
+            tags: '$(Environment.Name)-$(Build.BuildId)'
+        - task: Docker@2
+          inputs:
+            containerRegistry: 'SaudeID-PRD Container Registry'
+            repository: 'saudeid-prd/${{ parameters.namespace }}/$(Build.Repository.Name)'
+            command: 'push'
             tags: '$(Environment.Name)-$(Build.BuildId)'
         - task: HelmDeploy@0
           inputs:
             connectionType: 'Kubernetes Service Connection'
-            kubernetesServiceConnection: 'GCP - ${{ parameters.environment }}-Kubernetes'
+            kubernetesServiceConnection: 'GCP - dev-Kubernetes'
             namespace: '${{ parameters.namespace }}'
             command: 'upgrade'
             chartType: 'FilePath'
