@@ -32,7 +32,7 @@ stages:
         
 - stage: Production
   jobs:
-  - template: BuildTemplates/develop-build.yaml@templates
+  - template: develop-build.yaml@templates
     parameters:
         environment: ${{ parameters.environment }}
         namespace: ${{ parameters.namespace }}
