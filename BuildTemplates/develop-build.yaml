@@ -17,8 +17,8 @@ jobs:
     vmImage: 'ubuntu-latest'
   ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
     environment: dev
-  ${{ each object in parameters.environment }}:
-    ${{ each release in variables['Build.SourceBranchName'] }}:
+  ${{ for object in parameters.environment }}:
+    ${{ if contains(variables['Build.SourceBranchName'], 'release' }}:
       environment: ${{ object }}
   strategy:
     runOnce:
