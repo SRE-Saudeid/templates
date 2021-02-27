@@ -1,15 +1,3 @@
-${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
-  environment: dev
-  stage: 'Development'
-  kubernetes: 'GCP - dev-Kubernetes'
-${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
-  environment: qa
-  stage: 'Quality'
-  kubernetes: 'GCP - qa-Kubernetes'
-${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
-  environment: prod
-  stage: 'Production'
-  kubernetes: 'GCP - prod-Kubernetes'
 
 jobs:
 - deployment: ${{ parameters.stage }}
@@ -21,6 +9,18 @@ jobs:
     runOnce:
       deploy:
         steps:
+        ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
+          environment: dev
+          stage: 'Development'
+          kubernetes: 'GCP - dev-Kubernetes'
+        ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+          environment: qa
+          stage: 'Quality'
+          kubernetes: 'GCP - qa-Kubernetes'
+        ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+          environment: prod
+          stage: 'Production'
+          kubernetes: 'GCP - prod-Kubernetes'
         - checkout: self
           clean: true
         - checkout: git://Area-Engenharia/templates
