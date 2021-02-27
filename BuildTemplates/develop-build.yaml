@@ -8,7 +8,7 @@ parameters:
   default: []
 - name: app
   default: []
--name: stage
+- name: stage
   default: []
 
 jobs:
