@@ -1,12 +1,10 @@
 parameters:
   environment:
-  - name: 'hml'
-    type: object
-    default:
+  - key: 'hml'
+    value:
     - hml
-  - name: 'prod'
-    type: object
-    default:
+  - key: 'prod'
+    value:
     - prod
 - name: namespace
   default: []
