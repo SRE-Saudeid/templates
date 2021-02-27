@@ -1,7 +1,7 @@
 
 jobs:
 - ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
-  environment: dev
+  ${{ parameters.environment }}: dev
   # stage: 'Development'
   # kubernetes: 'GCP - dev-Kubernetes'
 - deployment: ${{ parameters.stage }}
