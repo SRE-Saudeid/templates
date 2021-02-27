@@ -1,7 +1,16 @@
+parameters:
+- name: env
+  default: ['hml','prod']
+- name: namespace
+  default: []
+- name: stage
+  default: []
+- name: release
+  default: []
+- name: app
+  default: []
+
 jobs:
-  variables:
-  - name: 'env'
-    value: ['hml','prod']
   # stage: 'Development'
   # kubernetes: 'GCP - dev-Kubernetes'
 - deployment: ${{ parameters.stage }}
