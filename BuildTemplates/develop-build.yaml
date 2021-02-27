@@ -8,6 +8,8 @@ parameters:
   default: []
 - name: app
   default: []
+-name: stage
+  default: []
 
 jobs:
   # kubernetes: 'GCP - dev-Kubernetes'
