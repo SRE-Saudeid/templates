@@ -6,7 +6,6 @@ parameters:
   - hml
   - prod
 - name: 'namespace'
-- name: 'stage'
 - name: 'app'
 - name: 'release'
 
