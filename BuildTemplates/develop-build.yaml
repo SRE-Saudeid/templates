@@ -9,7 +9,7 @@ parameters:
 - name: app
   default: []
 - name: kubernetes
-  default: ['GCP - ${{ parameters.environment }}-Kubernetes']
+  default: []
 
 
 jobs:
@@ -58,7 +58,7 @@ jobs:
         - task: HelmDeploy@0
           inputs:
             connectionType: 'Kubernetes Service Connection'
-            kubernetesServiceConnection: ${{ parameter.kubernetes }}
+            kubernetesServiceConnection: 'GCP - ${{ parameters.environment }}-Kubernetes'
             namespace: '${{ parameters.namespace }}'
             command: 'upgrade'
             chartType: 'FilePath'
