@@ -1,6 +1,3 @@
-parameters:
-- name: 'env'
-  default: ['dev, hml, prod']
 
 jobs:
   # stage: 'Development'
