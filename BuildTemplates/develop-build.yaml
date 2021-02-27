@@ -1,13 +1,15 @@
 parameters:
 - name: environment
   type: object
-  default: ['dev','hml','prod']
+  default: []
 - name: namespace
   default: []
 - name: release
   default: []
 - name: app
   default: []
+- name: kubernetes
+  default: 'GCP - ${{ paramenters.environment }}-Kubernetes'
 
 jobs:
   # kubernetes: 'GCP - dev-Kubernetes'
@@ -21,8 +23,6 @@ jobs:
     runOnce:
       deploy:
         steps:
-        - ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
-          environment: dev
         - checkout: self
           clean: true
         - checkout: git://Area-Engenharia/templates
@@ -57,7 +57,7 @@ jobs:
         - task: HelmDeploy@0
           inputs:
             connectionType: 'Kubernetes Service Connection'
-            kubernetesServiceConnection: 'GCP - dev-Kubernetes'
+            kubernetesServiceConnection: ${{ parameter.kubernetes }}
             namespace: '${{ parameters.namespace }}'
             command: 'upgrade'
             chartType: 'FilePath'
