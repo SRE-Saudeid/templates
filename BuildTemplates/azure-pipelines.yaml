@@ -12,7 +12,7 @@ parameters:
   default: []
     
 stages:
-- ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+- ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
   - stage: Development
     jobs:
     - template: develop-build.yaml@templates
@@ -21,21 +21,22 @@ stages:
           namespace: ${{ parameters.namespace }}
           release: ${{ parameters.release }}
           app: ${{ parameters.app }}
+
+- ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
+  - stage: Quality
+    jobs:
+    - template: develop-build.yaml@templates
+      parameters:
+          environment: qa
+          namespace: ${{ parameters.namespace }}
+          release: ${{ parameters.release }}
+          app: ${{ parameters.app }}
         
-- stage: Quality
-  jobs:
-  - template: develop-build.yaml@templates
-    parameters:
-        environment: qa
-        namespace: ${{ parameters.namespace }}
-        release: ${{ parameters.release }}
-        app: ${{ parameters.app }}
-        
-- stage: Production
-  jobs:
-  - template: develop-build.yaml@templates
-    parameters:
-        environment: prod
-        namespace: ${{ parameters.namespace }}
-        release: ${{ parameters.release }}
-        app: ${{ parameters.app }}
+  - stage: Production
+    jobs:
+    - template: develop-build.yaml@templates
+      parameters:
+          environment: prod
+          namespace: ${{ parameters.namespace }}
+          release: ${{ parameters.release }}
+          app: ${{ parameters.app }}
