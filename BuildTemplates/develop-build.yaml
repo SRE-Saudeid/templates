@@ -1,7 +1,7 @@
 parameters:
 - name: environment
-  env: hml
-  env: prod
+  hml: hml
+  prod: prod
 - name: namespace
   default: []
 - name: release
