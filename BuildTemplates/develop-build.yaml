@@ -45,14 +45,8 @@ jobs:
           inputs:
             containerRegistry: 'SaudeID-PRD Container Registry'
             repository: 'saudeid-prd/${{ parameters.namespace }}/$(Build.Repository.Name)'
-            command: 'build'
+            command: 'buildAndPush'
             Dockerfile: '**/Dockerfile'
-            tags: '$(Environment.Name)-$(Build.BuildId)'
-        - task: Docker@2
-          inputs:
-            containerRegistry: 'SaudeID-PRD Container Registry'
-            repository: 'saudeid-prd/${{ parameters.namespace }}/$(Build.Repository.Name)'
-            command: 'push'
             tags: '$(Environment.Name)-$(Build.BuildId)'
         - task: HelmDeploy@0
           inputs:
