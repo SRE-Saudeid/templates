@@ -15,11 +15,11 @@ jobs:
   displayName: ${{ variables.stage }}
   pool:
     vmImage: 'ubuntu-latest'
-#  ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
-#    environment: dev
-  ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
-    ${{ each t in parameters.teste }}:
-      environment: ${{ t }}
+  ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
+    environment: dev
+${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+  ${{ each t in parameters.teste }}:
+    environment: ${{ t }}
   strategy:
     runOnce:
       deploy:
