@@ -1,9 +1,13 @@
 parameters:
-- name: 'teste'
-  type: object
-  default:
-  - hml
-  - prod
+  environment:
+  - name: 'hml'
+    type: object
+    default:
+    - hml
+  - name: 'prod'
+    type: object
+    default:
+    - prod
 - name: namespace
   default: []
 - name: release
