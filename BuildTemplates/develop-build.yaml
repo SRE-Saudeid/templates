@@ -1,5 +1,6 @@
 parameters:
-- name: environment
+- name: env
+  type: string
   default: ['hml','prod']
 - name: namespace
   default: []
