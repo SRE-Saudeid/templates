@@ -1,7 +1,9 @@
 parameters:
 - name: 'environment'
-#  type: object
-  default: ['environment: hml', 'environment: prod']
+  type: object
+  default:
+  - hml
+  - prod
 - name: namespace
   default: []
 - name: release
