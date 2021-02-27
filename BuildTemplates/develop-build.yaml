@@ -8,6 +8,7 @@ parameters:
 - name: 'namespace'
 - name: 'app'
 - name: 'release'
+- name: 'stage'
 
 
 jobs:
