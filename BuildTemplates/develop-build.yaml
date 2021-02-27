@@ -15,9 +15,9 @@ jobs:
   displayName: ${{ variables.stage }}
   pool:
     vmImage: 'ubuntu-latest'
+  ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
+    environment: dev
   ${{ each value in parameters.environment }}:
-    # ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
-    #   environment: dev
     ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
       environment: ${{ value }}
   strategy:
