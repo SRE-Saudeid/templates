@@ -1,7 +1,7 @@
 parameters:
 - name: 'environment'
   type: object
-  default: [hml,prod]
+  default: ['environment: hml', 'environment: prod']
 - name: namespace
   default: []
 - name: release
@@ -18,7 +18,7 @@ jobs:
   ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
     environment: dev
   ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
-    ${{ each environment in parameters.environment }} :
+    ${{ each pair in parameters.environment }} :
       environment: ${{ parameters.environment }}
   strategy:
     runOnce:
