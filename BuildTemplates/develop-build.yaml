@@ -1,6 +1,6 @@
 parameters:
 - name: 'environment'
-  type: object
+#  type: object
   default: ['environment: hml', 'environment: prod']
 - name: namespace
   default: []
