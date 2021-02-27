@@ -18,8 +18,8 @@ jobs:
   ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
     environment: dev
   ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
-    ${{ each teste in parameters.teste }} :
-      environment: ${{ teste }}
+    ${{ each value in parameters.teste }} :
+      environment: ${{ value }}
   strategy:
     runOnce:
       deploy:
