@@ -18,8 +18,8 @@ jobs:
   # ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
   #  environment: hml
 #  ${{ each release in variables['Build.SourceBranchName'] }}:
-  ${{ each env in parameters.env }}:
-    environment: ${{ parameters.env }}
+  ${{ each env in variables.env }}:
+    environment: ${{ variables.env }}
   strategy:
     runOnce:
       deploy:
