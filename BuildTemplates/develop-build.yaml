@@ -1,7 +1,6 @@
 parameters:
 - name: 'env'
-  type: object
-  value: ['dev, hml, prod']
+value: ['dev, hml, prod']
 
 jobs:
   # stage: 'Development'
