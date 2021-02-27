@@ -10,7 +10,7 @@ jobs:
   ${{ each release in variables['Build.SourceBranchName'] }}:
    environment: hml
 #  ${{ each release in variables['Build.SourceBranchName'] }}:
-    environment: prod
+  environment: prod
 #  environment: ${{ parameters.environment }}
   strategy:
     runOnce:
