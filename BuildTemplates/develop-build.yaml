@@ -10,7 +10,6 @@ parameters:
   default: []
 
 jobs:
-  # stage: 'Development'
   # kubernetes: 'GCP - dev-Kubernetes'
 - deployment: ${{ variables.stage }}
   displayName: ${{ variables.stage }}
@@ -19,7 +18,7 @@ jobs:
   ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
     environment: dev
   ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
-    ${{ each environment in environment }} :
+    ${{ each environment in ${{ parameters.environment }} }} :
       environment: ${{ parameters.environment }}
   strategy:
     runOnce:
