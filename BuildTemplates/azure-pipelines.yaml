@@ -11,6 +11,7 @@ parameters:
 - name: app
   default: []
     
+stages:
 - stage: Development
   jobs:
   - template: BuildTemplates/develop-build.yaml@templates
