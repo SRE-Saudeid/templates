@@ -12,15 +12,15 @@ parameters:
   default: []
     
 stages:
- ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
-- stage: Development
-  jobs:
-  - template: develop-build.yaml@templates
-    parameters:
-        environment: dev
-        namespace: ${{ parameters.namespace }}
-        release: ${{ parameters.release }}
-        app: ${{ parameters.app }}
+${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+  - stage: Development
+    jobs:
+    - template: develop-build.yaml@templates
+      parameters:
+          environment: dev
+          namespace: ${{ parameters.namespace }}
+          release: ${{ parameters.release }}
+          app: ${{ parameters.app }}
         
 - stage: Quality
   jobs:
