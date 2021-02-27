@@ -6,8 +6,8 @@ parameters:
   default: []
 - name: namespace
   default: []
-- name: release
-  default: []
+#- name: release
+#  default: []
 - name: app
   default: []
     
