@@ -1,6 +1,6 @@
 parameters:
 - name: 'environment'
-  type: list
+  type: stepList
   default: ['hml','prod']
 - name: namespace
   default: []
