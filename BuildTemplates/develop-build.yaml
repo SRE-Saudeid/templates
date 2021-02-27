@@ -1,8 +1,6 @@
 parameters:
 - name: environment
-  - key: 'hml'
     value: hml
-  - key: 'prod'
     value: prod
 - name: namespace
   default: []
