@@ -22,7 +22,7 @@ jobs:
       deploy:
         steps:
 ##### dev
-        -  ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
+        - ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
         - checkout: self
           clean: true
         - checkout: git://Area-Engenharia/templates
@@ -67,7 +67,7 @@ jobs:
             waitForExecution: false
             force: false
 ########## release            
-        -  ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+        - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
         - checkout: self
           clean: true
         - checkout: git://Area-Engenharia/templates
