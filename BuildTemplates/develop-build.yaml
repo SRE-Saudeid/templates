@@ -1,7 +1,7 @@
 parameters:
-- name: teste
+- name: environment
   type: object
-  default: ['hml','prod']
+  default: []
 - name: namespace
   default: []
 - name: release
