@@ -1,10 +1,10 @@
 parameters:
-- name: env
+- name: environment
   default: ['hml','prod']
 - name: namespace
   default: []
-- name: stage
-  default: []
+#- name: stage
+#  default: []
 - name: release
   default: []
 - name: app
