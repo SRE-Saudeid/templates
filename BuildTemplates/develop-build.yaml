@@ -7,10 +7,10 @@ jobs:
     vmImage: 'ubuntu-latest'
   ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
     environment: dev
-  ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+  ${{ each contains(variables['Build.SourceBranchName'], 'release') }}:
    environment: hml
-  ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
-   environment: prod
+    ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+      environment: prod
 #  environment: ${{ parameters.environment }}
   strategy:
     runOnce:
@@ -18,7 +18,7 @@ jobs:
         steps:
         - checkout: self
           clean: true
-        - checkout: templates
+        - checkout: git://Area-Engenharia/templates
           clean: true
         - task: Bash@3
           inputs:
