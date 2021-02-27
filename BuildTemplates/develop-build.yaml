@@ -1,3 +1,7 @@
+paramenters:
+- name: env
+  default: ['hml','prod']
+
 
 jobs:
   # stage: 'Development'
@@ -9,7 +13,8 @@ jobs:
   ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
     environment: dev
   ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
-    environment: 'hml','prod'
+    ${{ each environment in environment:
+      environment: ${{ parameters.environment }}
   strategy:
     runOnce:
       deploy:
