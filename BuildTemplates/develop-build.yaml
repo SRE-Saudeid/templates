@@ -1,6 +1,6 @@
-parameters:
+variables:
 - name: 'env'
-  default: ['hml','prod']
+  value: ['hml','prod']
 
 
 jobs:
