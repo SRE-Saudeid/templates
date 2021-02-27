@@ -16,10 +16,10 @@ stages:
   jobs:
   - template: develop-build.yaml@templates
     parameters:
-        environment: []
-        namespace: []
-        release: []
-        app: []
+        environment: ${{ paramenter.environment }}
+        namespace: ${{ paramenter.namespace }}
+        release: ${{ paramenter.release }}
+        app: ${{ paramenter.app }}
 
 - stage: Quality
   jobs:
