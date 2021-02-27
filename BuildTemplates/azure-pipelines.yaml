@@ -40,3 +40,21 @@ stages:
           namespace: ${{ parameters.namespace }}
           release: prod-${{ parameters.app }}
           app: ${{ parameters.app }}
+- ${{ if contains(variables['Build.SourceBranchName'], 'hotfix') }}:        
+  - stage: Quality
+    jobs:
+    - template: develop-build.yaml@templates
+      parameters:
+          environment: qa
+          namespace: ${{ parameters.namespace }}
+          release: qa-${{ parameters.app }}
+          app: ${{ parameters.app }}
+        
+  - stage: Production
+    jobs:
+    - template: develop-build.yaml@templates
+      parameters:
+          environment: prod
+          namespace: ${{ parameters.namespace }}
+          release: prod-${{ parameters.app }}
+          app: ${{ parameters.app }}
