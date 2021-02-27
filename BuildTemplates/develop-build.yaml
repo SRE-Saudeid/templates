@@ -21,6 +21,8 @@ jobs:
     runOnce:
       deploy:
         steps:
+        - ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
+          environment: dev
         - checkout: self
           clean: true
         - checkout: git://Area-Engenharia/templates
