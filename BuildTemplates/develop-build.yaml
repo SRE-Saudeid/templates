@@ -10,7 +10,7 @@ jobs:
     environment: dev
   ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
     ${{ each release in variables['Build.SourceBranchName'] }}:
-      environment: '['hml,'prod']'
+      environment: ['hml','prod']
   strategy:
     runOnce:
       deploy:
