@@ -1,8 +1,6 @@
 parameters:
 - name: environment
-  default:
-  - hml
-  - prod
+  default: ['hml','prod']
 - name: namespace
   default: []
 - name: release
