@@ -9,7 +9,7 @@ jobs:
     environment: dev
   ${{ each release in variables['Build.SourceBranchName'] }}:
    environment: hml
-    ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+    ${{ each release in variables['Build.SourceBranchName'] }}:
       environment: prod
 #  environment: ${{ parameters.environment }}
   strategy:
