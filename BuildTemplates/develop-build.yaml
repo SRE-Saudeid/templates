@@ -1,4 +1,4 @@
-paramenters:
+parameters:
 - name: env
   default: ['hml','prod']
 
