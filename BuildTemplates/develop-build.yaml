@@ -1,5 +1,6 @@
 parameters:
 - name: 'environment'
+  type: list
   default: ['hml','prod']
 - name: namespace
   default: []
