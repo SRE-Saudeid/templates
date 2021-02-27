@@ -21,6 +21,7 @@ stages:
           namespace: ${{ parameters.namespace }}
           release: dev-${{ parameters.app }}
           app: ${{ parameters.app }}
+          stage: Development
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
   - stage: Quality
@@ -31,6 +32,7 @@ stages:
           namespace: ${{ parameters.namespace }}
           release: qa-${{ parameters.app }}
           app: ${{ parameters.app }}
+          stage: Quality
         
   - stage: Production
     jobs:
@@ -40,6 +42,7 @@ stages:
           namespace: ${{ parameters.namespace }}
           release: prod-${{ parameters.app }}
           app: ${{ parameters.app }}
+          stage: Production
 - ${{ if contains(variables['Build.SourceBranchName'], 'hotfix') }}:        
   - stage: Quality
     jobs:
@@ -49,6 +52,7 @@ stages:
           namespace: ${{ parameters.namespace }}
           release: qa-${{ parameters.app }}
           app: ${{ parameters.app }}
+          stage: Quality
         
   - stage: Production
     jobs:
@@ -58,3 +62,4 @@ stages:
           namespace: ${{ parameters.namespace }}
           release: prod-${{ parameters.app }}
           app: ${{ parameters.app }}
+          stage: Production
