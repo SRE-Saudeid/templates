@@ -1,7 +1,7 @@
 parameters:
 - name: environment
   type: object
-  default: {'hml','prod'}
+  default: ['hml','prod']
 - name: namespace
   default: []
 - name: release
@@ -15,13 +15,11 @@ jobs:
   displayName: ${{ variables.stage }}
   pool:
     vmImage: 'ubuntu-latest'
-
-  ${{ each key in parameters.environment }}:
+  ${{ each value in parameters.environment }}:
     ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
       environment: dev
     ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
-      environment: ${{ key }}
- 
+      environment: ${{ value }}
   strategy:
     runOnce:
       deploy:
