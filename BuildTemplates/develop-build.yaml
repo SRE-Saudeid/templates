@@ -1,5 +1,5 @@
 parameters:
-- name: env
+- name: 'environment'
   type: string
   default: ['hml','prod']
 - name: namespace
