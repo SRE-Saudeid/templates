@@ -4,6 +4,8 @@ parameters:
   default: {'hml','prod'}
 - name: namespace
   default: []
+- name: stage
+  default: []
 - name: release
   default: []
 - name: app
@@ -12,8 +14,8 @@ parameters:
 jobs:
   # stage: 'Development'
   # kubernetes: 'GCP - dev-Kubernetes'
-- deployment: ${{ parameters.stage }}
-  displayName: ${{ parameters.stage }}
+- deployment: ${{ variables.stage }}
+  displayName: ${{ variables.stage }}
   pool:
     vmImage: 'ubuntu-latest'
   ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
