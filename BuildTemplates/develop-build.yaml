@@ -1,7 +1,7 @@
 jobs:
-variables:
-- name: 'env'
-  value: ['hml','prod']
+  variables:
+  - name: 'env'
+    value: ['hml','prod']
   # stage: 'Development'
   # kubernetes: 'GCP - dev-Kubernetes'
 - deployment: ${{ parameters.stage }}
