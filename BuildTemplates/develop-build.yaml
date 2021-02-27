@@ -1,15 +1,7 @@
 parameters:
 - name: 'env'
   type: object
-  default: 
-  - dev
-  - hml
-  - prod
-- name: 'namespace'
-- name: 'app'
-- name: 'release'
-- name: 'stage'
-
+  value: ['dev, hml, prod']
 
 jobs:
   # stage: 'Development'
