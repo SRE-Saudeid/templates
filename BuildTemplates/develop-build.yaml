@@ -1,6 +1,6 @@
 parameters:
 - name: 'env'
-value: ['dev, hml, prod']
+  value: ['dev, hml, prod']
 
 jobs:
   # stage: 'Development'
