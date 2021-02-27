@@ -9,17 +9,15 @@ parameters:
 - name: app
   default: []
 
-
--  ${{ each object in parameters.environment }}:
-     ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
-       environment: ${{ object }}
 jobs:
   # kubernetes: 'GCP - dev-Kubernetes'
 - deployment: ${{ variables.stage }}
   displayName: ${{ variables.stage }}
   pool:
     vmImage: 'ubuntu-latest'
-  environment: ${{ environment }}
+  ${{ each object in parameters.environment }}:
+    ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+      environment: ${{ object }}
   strategy:
     runOnce:
       deploy:
