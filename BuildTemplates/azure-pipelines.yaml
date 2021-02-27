@@ -25,16 +25,16 @@ stages:
   jobs:
   - template: develop-build.yaml@templates
     parameters:
-        environment: []
-        namespace: []
-        release: []
-        app: []
+        environment: ${{ parameters.environment }}
+        namespace: ${{ parameters.namespace }}
+        release: ${{ parameters.release }}
+        app: ${{ parameters.app }}
         
 - stage: Production
   jobs:
   - template: BuildTemplates/develop-build.yaml@templates
     parameters:
-        environment: []
-        namespace: []
-        release: []
-        app: []
+        environment: ${{ parameters.environment }}
+        namespace: ${{ parameters.namespace }}
+        release: ${{ parameters.release }}
+        app: ${{ parameters.app }}
