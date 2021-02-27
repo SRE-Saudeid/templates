@@ -67,10 +67,6 @@ jobs:
   ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
     ${{ each t in parameters.teste }}:
       environment: ${{ t }}
-  strategy:
-    runOnce:
-      deploy:
-        steps:
         - checkout: self
           clean: true
         - checkout: git://Area-Engenharia/templates
