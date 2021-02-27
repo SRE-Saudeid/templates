@@ -9,7 +9,7 @@ parameters:
 - name: app
   default: []
 - name: kubernetes
-  default: 'GCP - ${{ paramenters.environment }}-Kubernetes'
+  default: ['GCP - ${{ paramenters.environment }}-Kubernetes']
 
 jobs:
   # kubernetes: 'GCP - dev-Kubernetes'
