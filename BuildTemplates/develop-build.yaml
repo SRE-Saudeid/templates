@@ -7,9 +7,9 @@ jobs:
     vmImage: 'ubuntu-latest'
   ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
     environment: dev
-  ${{ each release in variables['Build.SourceBranchName'] }}:
+  ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
    environment: hml
-#  ${{ each release in variables['Build.SourceBranchName'] }}:
+  ${{ each release in variables['Build.SourceBranchName'] }}:
   environment: prod
 #  environment: ${{ parameters.environment }}
   strategy:
