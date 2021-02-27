@@ -14,7 +14,7 @@ parameters:
 stages:
 - stage: Development
   jobs:
-  - template: BuildTemplates/develop-build.yaml@templates
+  - template: develop-build.yaml@templates
     parameters:
         environment: []
         namespace: []
@@ -23,7 +23,7 @@ stages:
 
 - stage: Quality
   jobs:
-  - template: BuildTemplates/develop-build.yaml@templates
+  - template: develop-build.yaml@templates
     parameters:
         environment: []
         namespace: []
