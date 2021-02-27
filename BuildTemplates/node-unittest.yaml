@@ -1,0 +1,71 @@
+# https://aka.ms/yaml
+
+jobs:
+- deployment: ${{ parameters.stage }}
+  displayName: ${{ parameters.stage }}
+  pool:
+    vmImage: 'ubuntu-latest'
+  environment: ${{ parameters.environment }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - checkout: self
+          clean: true
+        - checkout: git://Area-Engenharia/templates
+        - bash: npm install
+          displayName: Install
+          continueOnError: false
+        - bash: npm run lint
+          displayName: Lint
+          continueOnError: true
+        - bash: |
+            npm test \
+            --  \
+            --ci  \
+            --coverage  \
+            --reporters=default  \
+            --reporters=jest-junit  \
+            --coverageReporters=text  \
+            --coverageReporters=text-summary  \
+            --coverageReporters=lcov  \
+            --coverageReporters=cobertura
+          displayName: Unit Test
+          continueOnError: false
+        - task: PublishTestResults@2
+          inputs:
+            testResultsFormat: 'JUnit'
+            testResultsFiles: 'junit.xml'
+            searchFolder: '$(Build.SourcesDirectory)'
+            testRunTitle: 'api-cuidar($(Build.SourceBranchName)): Unit Tests [$(Build.SourceVersion)]'
+        - task: PublishCodeCoverageResults@1
+          inputs:
+            codeCoverageTool: 'Cobertura'
+            summaryFileLocation: '$(Build.SourcesDirectory)/coverage/cobertura-coverage.xml'
+        - bash: npm run build
+          displayName: Build
+          continueOnError: false
+        - task: CopyFiles@2
+          inputs:
+            SourceFolder: $(Build.SourcesDirectory)
+            Contents: |
+              **
+              !coverage/**
+              !.git/**
+              !.vscode/**
+              !node_modules/**
+            TargetFolder: $(Build.BinariesDirectory)
+            CleanTargetFolder: true
+        - task: ArchiveFiles@2
+          inputs:
+            rootFolderOrFile: $(Build.BinariesDirectory)
+            includeRootFolder: false
+            archiveType: zip
+            archiveFile: $(Build.ArtifactStagingDirectory)/api-cuidar-digital.zip
+            replaceExistingArchive: true
+            verbose: true
+        - task: PublishBuildArtifacts@1 
+          inputs:
+            PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+            ArtifactName: 'build'
+            publishLocation: 'Container'

@@ -1,3 +1,17 @@
+parameters:
+  ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
+    environment: dev
+    stage: 'Development'
+    kubernetes: 'GCP - dev-Kubernetes'
+  ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+    environment: qa
+    stage: 'Quality'
+    kubernetes: 'GCP - qa-Kubernetes'
+  ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+    environment: prod
+    stage: 'Production'
+    kubernetes: 'GCP - prod-Kubernetes'
+
 jobs:
 - deployment: ${{ parameters.stage }}
   displayName: ${{ parameters.stage }}
@@ -29,20 +43,20 @@ jobs:
         - task: Docker@2
           inputs:
             containerRegistry: 'SaudeID-PRD Container Registry'
-            repository: 'saudeid-prd/b2c/$(Build.Repository.Name)'
+            repository: 'saudeid-prd/${{ parameters.namespace }}/$(Build.Repository.Name)'
             command: 'build'
             Dockerfile: '**/Dockerfile'
             tags: '$(Environment.Name)-$(Build.BuildId)'
         - task: Docker@2
           inputs:
             containerRegistry: 'SaudeID-PRD Container Registry'
-            repository: 'saudeid-prd/b2c/$(Build.Repository.Name)'
+            repository: 'saudeid-prd/${{ parameters.namespace }}/$(Build.Repository.Name)'
             command: 'push'
             tags: '$(Environment.Name)-$(Build.BuildId)'
         - task: HelmDeploy@0
           inputs:
             connectionType: 'Kubernetes Service Connection'
-            kubernetesServiceConnection: 'GCP - dev-Kubernetes'
+            kubernetesServiceConnection: '${{ parameters.kubernetes }}'
             namespace: '${{ parameters.namespace }}'
             command: 'upgrade'
             chartType: 'FilePath'
