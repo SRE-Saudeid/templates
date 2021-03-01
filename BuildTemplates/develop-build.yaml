@@ -10,7 +10,7 @@ parameters:
   default: []
 - name: stage
   default: []
-- name: nodejs
+- name: coveragetest
   default: []
 
 jobs:
@@ -37,8 +37,10 @@ jobs:
           - bash: npm install
             displayName: Install
             continueOnError: false
+            workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
           - bash: npm run lint
             displayName: Lint
+            workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
             continueOnError: true
           - bash: |
               npm test \
@@ -53,6 +55,7 @@ jobs:
               --coverageReporters=cobertura
             displayName: Unit Test
             continueOnError: false
+            workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
           - task: PublishTestResults@2
             inputs:
               testResultsFormat: 'JUnit'
