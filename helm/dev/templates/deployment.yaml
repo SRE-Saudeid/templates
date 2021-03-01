@@ -39,7 +39,7 @@ spec:
 #                - general
       containers:
         - name: {{Name}}
-          image: gcr.io/saudeid-prd/b2c/{{Name}}:{{environment}}-{{BuildId}}
+          image: gcr.io/saudeid-prd/{{namespace}}/{{Name}}:{{environment}}-{{BuildId}}
           imagePullPolicy: Always
           ports:
           - containerPort: 80
