@@ -12,6 +12,8 @@ parameters:
   default: []
 - name: coveragetest
   default: []
+- name: stage
+  default: []
 
 stages:
 - ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
