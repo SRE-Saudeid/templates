@@ -10,7 +10,9 @@ parameters:
 #  default: []
 - name: app
   default: []
-    
+- name: nodejs
+  default: []
+
 stages:
 - ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
   - stage: Development
@@ -22,6 +24,7 @@ stages:
           release: dev-${{ parameters.app }}
           app: ${{ parameters.app }}
           stage: Development
+          nodejs: ${{ parameters.nodejs }}
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
   - stage: Quality
