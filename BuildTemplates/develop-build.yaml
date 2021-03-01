@@ -31,6 +31,50 @@ jobs:
             targetType: 'inline'
             script: 'sed -i ''s/{{namespace}}/${{ parameters.namespace }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/*.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' $(Build.Repository.Name)/Dockerfile' 
             workingDirectory: '$(System.DefaultWorkingDirectory)'
+        - ${{ if eq(parameters.dotnet, 'true') }}:
+          - bash: npm install
+            displayName: Install
+            continueOnError: false
+          - bash: npm run lint
+            displayName: Lint
+            continueOnError: true
+          - bash: |
+              npm test \
+              --  \
+              --ci  \
+              --coverage  \
+              --reporters=default  \
+              --reporters=jest-junit  \
+              --coverageReporters=text  \
+              --coverageReporters=text-summary  \
+              --coverageReporters=lcov  \
+              --coverageReporters=cobertura
+            displayName: Unit Test
+            continueOnError: false
+          - task: PublishTestResults@2
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: 'junit.xml'
+              searchFolder: '$(Build.SourcesDirectory)'
+              testRunTitle: 'api-cuidar($(Build.SourceBranchName)): Unit Tests [$(Build.SourceVersion)]'
+          - task: PublishCodeCoverageResults@1
+            inputs:
+              codeCoverageTool: 'Cobertura'
+              summaryFileLocation: '$(Build.SourcesDirectory)/coverage/cobertura-coverage.xml'
+          - bash: npm run build
+            displayName: Build
+            continueOnError: false
+          - task: CopyFiles@2
+            inputs:
+              SourceFolder: $(Build.SourcesDirectory)
+              Contents: |
+                **
+                !coverage/**
+                !.git/**
+                !.vscode/**
+                !node_modules/**
+              TargetFolder: $(Build.BinariesDirectory)
+              CleanTargetFolder: true
         - task: HelmInstaller@0
           inputs:
             helmVersion: '3.4.2'
