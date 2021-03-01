@@ -10,7 +10,7 @@ parameters:
 #  default: []
 - name: app
   default: []
-- name: nodejs
+- name: coveragetest
   default: []
 
 stages:
@@ -24,7 +24,7 @@ stages:
           release: dev-${{ parameters.app }}
           app: ${{ parameters.app }}
           stage: Development
-          nodejs: ${{ parameters.nodejs }}
+          coveragetest: ${{ parameters.nodejs }}
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
   - stage: Quality
