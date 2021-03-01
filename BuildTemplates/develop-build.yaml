@@ -10,6 +10,8 @@ parameters:
   default: []
 - name: stage
   default: []
+- name: nodejs
+  default: []
 
 jobs:
   # kubernetes: 'GCP - dev-Kubernetes'
@@ -31,7 +33,7 @@ jobs:
             targetType: 'inline'
             script: 'sed -i ''s/{{namespace}}/${{ parameters.namespace }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/*.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' $(Build.Repository.Name)/Dockerfile' 
             workingDirectory: '$(System.DefaultWorkingDirectory)'
-        - ${{ if eq(parameters.dotnet, 'true') }}:
+        - ${{ if eq(parameters.nodejs, 'true') }}:
           - bash: npm install
             displayName: Install
             continueOnError: false
