@@ -24,7 +24,7 @@ stages:
           release: dev-${{ parameters.app }}
           app: ${{ parameters.app }}
           stage: Development
-          coveragetest: ${{ parameters.nodejs }}
+          coveragetest: ${{ parameters.coveragetest }}
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
   - stage: Quality
