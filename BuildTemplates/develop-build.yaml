@@ -61,7 +61,7 @@ jobs:
               testResultsFormat: 'JUnit'
               testResultsFiles: 'junit.xml'
               searchFolder: '$(Build.SourcesDirectory)'
-              testRunTitle: 'api-cuidar($(Build.SourceBranchName)): Unit Tests [$(Build.SourceVersion)]'
+              testRunTitle: '($(Build.SourceBranchName)): Unit Tests [$(Build.SourceVersion)]'
           - task: PublishCodeCoverageResults@1
             inputs:
               codeCoverageTool: 'Cobertura'
