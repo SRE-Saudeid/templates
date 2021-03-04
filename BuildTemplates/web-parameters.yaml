@@ -1,0 +1,61 @@
+# Repo: templates/
+# File: azure-pipelines.yml
+parameters:
+- name: environment
+  type: object
+  default: []
+- name: coveragetest
+  default: []
+- name: bucket
+  default: []
+
+stages:
+- ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
+  - stage: Development
+    jobs:
+    - template: webapp-pipeline.yaml@templates
+      parameters:
+          environment: dev
+          bucket: dev-${{ parameters.bucket }}
+          coveragetest: ${{ parameters.coveragetest }}
+
+- ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
+  - stage: Quality
+    jobs:
+    - template: develop-build.yaml@templates
+      parameters:
+          environment: qa
+          namespace: ${{ parameters.namespace }}
+          release: qa-${{ parameters.app }}
+          app: ${{ parameters.app }}
+          stage: Quality
+        
+  - stage: Production
+    jobs:
+    - template: develop-build.yaml@templates
+      parameters:
+          environment: prod
+          namespace: ${{ parameters.namespace }}
+          release: prod-${{ parameters.app }}
+          app: ${{ parameters.app }}
+          stage: Production
+- ${{ if contains(variables['Build.SourceBranchName'], 'hotfix') }}:        
+  - stage: Quality
+    jobs:
+    - template: develop-build.yaml@templates
+      parameters:
+          environment: qa
+          namespace: ${{ parameters.namespace }}
+          release: qa-${{ parameters.app }}
+          app: ${{ parameters.app }}
+          stage: Quality
+        
+  - stage: Production
+    jobs:
+    - template: develop-build.yaml@templates
+      parameters:
+          environment: prod
+          namespace: ${{ parameters.namespace }}
+          release: prod-${{ parameters.app }}
+          app: ${{ parameters.app }}
+          stage: Production
