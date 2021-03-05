@@ -26,7 +26,7 @@ jobs:
         steps:
         - checkout: self
           clean: true
-        - checkout: git://Area-Engenharia/templates
+        - checkout: templates
           clean: true
         - task: Bash@3
           inputs:
