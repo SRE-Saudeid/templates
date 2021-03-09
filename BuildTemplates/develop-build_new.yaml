@@ -102,10 +102,10 @@ jobs:
             helmVersion: '3.4.2'
             checkLatestHelmVersion: false
             installKubectl: true
-        - task: HelmDeploy@0
-          inputs:
-            command: 'package'
-            chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
+        # - task: HelmDeploy@0
+        #   inputs:
+        #     command: 'package'
+        #     chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
         - ${{ if eq(parameters.multidockerfile, 'true') }}:
           - task: Bash@3
             inputs:
