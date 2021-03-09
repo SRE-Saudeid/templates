@@ -12,7 +12,14 @@ parameters:
   default: []
 - name: coveragetest
   default: []
-
+- name: multidockerfile
+  default: []
+- name: dockerfile1
+  default: []
+- name: dockerfile2
+  default: []
+- name: dockerfile3
+  default: []
 
 stages:
 - ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
@@ -26,6 +33,11 @@ stages:
           app: ${{ parameters.app }}
           stage: Development
           coveragetest: ${{ parameters.coveragetest }}
+          multidockerfile: ${{ parameters.multidockerfile }}
+          dockerfile1: ${{ parameters.dockerfile1 }}
+          dockerfile2: ${{ parameters.dockerfile2 }}
+          dockerfile3: ${{ parameters.dockerfile3 }}
+
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
   - stage: Quality
