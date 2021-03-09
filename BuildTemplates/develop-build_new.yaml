@@ -34,7 +34,7 @@ jobs:
         steps:
         - checkout: self
           clean: true
-        - checkout: git://Area-Engenharia/templates
+#        - checkout: templates
           clean: true
         - task: Bash@3
           inputs:
@@ -103,21 +103,21 @@ jobs:
               containerRegistry: 'SaudeID-PRD Container Registry'
               repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
               command: 'buildAndPush'
-              Dockerfile: ${{ parameters.dockerfile1 }}
+              Dockerfile: $(Build.SourcesDirectory)/${{ parameters.dockerfile1 }}
               tags: '$(Environment.Name)-$(Build.BuildId)'   
           - task: Docker@2
             inputs:
               containerRegistry: 'SaudeID-PRD Container Registry'
               repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
               command: 'buildAndPush'
-              Dockerfile: ${{ parameters.dockerfile2 }}
+              Dockerfile: $(Build.SourcesDirectory)/${{ parameters.dockerfile2 }}
               tags: '$(Environment.Name)-$(Build.BuildId)'
           - task: Docker@2
             inputs:
               containerRegistry: 'SaudeID-PRD Container Registry'
               repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
               command: 'buildAndPush'
-              Dockerfile: ${{ parameters.dockerfile3 }}
+              Dockerfile: $(Build.SourcesDirectory)/${{ parameters.dockerfile3 }}
               tags: '$(Environment.Name)-$(Build.BuildId)'       
         - ${{ if eq(parameters.multidockerfile, 'false') }}:
           - task: Docker@2
