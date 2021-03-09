@@ -34,8 +34,8 @@ jobs:
         steps:
         - checkout: self
           clean: true
-#        - checkout: templates
-#          clean: true
+        - checkout: templates
+          clean: true
         - task: Bash@3
           inputs:
             targetType: 'inline'
