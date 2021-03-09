@@ -20,6 +20,12 @@ parameters:
   default: []
 - name: dockerfile3
   default: []
+- name: app1
+  default: []
+- name: app2
+  default: []
+- name: app3
+  default: []
 
 stages:
 - ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
@@ -37,7 +43,9 @@ stages:
           dockerfile1: ${{ parameters.dockerfile1 }}
           dockerfile2: ${{ parameters.dockerfile2 }}
           dockerfile3: ${{ parameters.dockerfile3 }}
-
+          app1: ${{ parameters.app1 }}
+          app2: ${{ parameters.app2 }}
+          app3: ${{ parameters.app3 }}
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
   - stage: Quality
