@@ -115,7 +115,7 @@ jobs:
           - task: Docker@2
             inputs:
               containerRegistry: 'SaudeID-PRD Container Registry'
-              repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
+              repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app1 }}'
               command: 'buildAndPush'
               Dockerfile: '**/${{ parameters.dockerfile1 }}'
               tags: '$(Environment.Name)-$(Build.BuildId)'
@@ -139,7 +139,7 @@ jobs:
           - task: Docker@2
             inputs:
               containerRegistry: 'SaudeID-PRD Container Registry'
-              repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
+              repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app2 }}'
               command: 'buildAndPush'
               Dockerfile: '**/${{ parameters.dockerfile2 }}'
               tags: '$(Environment.Name)-$(Build.BuildId)'
@@ -163,7 +163,7 @@ jobs:
           - task: Docker@2
             inputs:
               containerRegistry: 'SaudeID-PRD Container Registry'
-              repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
+              repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app3 }}'
               command: 'buildAndPush'
               Dockerfile: '**/${{ parameters.dockerfile3 }}'
               tags: '$(Environment.Name)-$(Build.BuildId)'     
