@@ -18,7 +18,7 @@ stages:
 - ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
   - stage: Development
     jobs:
-    - template: develop-build.yaml@templates
+    - template: develop-build_new.yaml@templates
       parameters:
           environment: dev
           namespace: ${{ parameters.namespace }}
@@ -30,7 +30,7 @@ stages:
 - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
   - stage: Quality
     jobs:
-    - template: develop-build.yaml@templates
+    - template: develop-build_new.yaml@templates
       parameters:
           environment: qa
           namespace: ${{ parameters.namespace }}
@@ -40,7 +40,7 @@ stages:
         
   - stage: Production
     jobs:
-    - template: develop-build.yaml@templates
+    - template: develop-build_new.yaml@templates
       parameters:
           environment: prod
           namespace: ${{ parameters.namespace }}
@@ -50,7 +50,7 @@ stages:
 - ${{ if contains(variables['Build.SourceBranchName'], 'hotfix') }}:        
   - stage: Quality
     jobs:
-    - template: develop-build.yaml@templates
+    - template: develop-build_new.yaml@templates
       parameters:
           environment: qa
           namespace: ${{ parameters.namespace }}
@@ -60,7 +60,7 @@ stages:
         
   - stage: Production
     jobs:
-    - template: develop-build.yaml@templates
+    - template: develop-build_new.yaml@templates
       parameters:
           environment: prod
           namespace: ${{ parameters.namespace }}
