@@ -1,0 +1,110 @@
+parameters:
+- name: environment
+  type: object
+  default: []
+- name: namespace
+  default: []
+- name: release
+  default: []
+- name: app
+  default: []
+- name: stage
+  default: []
+- name: coveragetest
+  default: []
+
+jobs:
+  # kubernetes: 'GCP - dev-Kubernetes'
+- deployment: ${{ parameters.stage }}
+  displayName: ${{ parameters.stage }}
+  pool:
+    vmImage: 'ubuntu-latest'
+  environment: ${{ parameters.environment }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - checkout: self
+          clean: true
+        - checkout: git://Area-Engenharia/templates
+          clean: true
+        - task: Bash@3
+          inputs:
+            targetType: 'inline'
+            script: 'sed -i ''s/{{namespace}}/${{ parameters.namespace }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/*.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' $(Build.Repository.Name)/Dockerfile*' 
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+        - ${{ if eq(parameters.coveragetest, 'true') }}:
+          - bash: npm install
+            displayName: Install
+            continueOnError: false
+            workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
+          - bash: npm run lint
+            displayName: Lint
+            workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
+            continueOnError: true
+          - bash: |
+              npm test \
+              --  \
+              --ci  \
+              --coverage  \
+              --reporters=default  \
+              --reporters=jest-junit  \
+              --coverageReporters=text  \
+              --coverageReporters=text-summary  \
+              --coverageReporters=lcov  \
+              --coverageReporters=cobertura
+            displayName: Unit Test
+            continueOnError: false
+            workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
+          - task: PublishTestResults@2
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: 'junit.xml'
+              searchFolder: '$(Build.SourcesDirectory)'
+              testRunTitle: '($(Build.SourceBranchName)): Unit Tests [$(Build.SourceVersion)]'
+          - task: PublishCodeCoverageResults@1
+            inputs:
+              codeCoverageTool: 'Cobertura'
+              summaryFileLocation: '$(Build.SourcesDirectory)/coverage/cobertura-coverage.xml'
+          - bash: npm run build
+            displayName: Build
+            continueOnError: false
+          - task: CopyFiles@2
+            inputs:
+              SourceFolder: $(Build.SourcesDirectory)
+              Contents: |
+                **
+                !coverage/**
+                !.git/**
+                !.vscode/**
+                !node_modules/**
+              TargetFolder: $(Build.BinariesDirectory)
+              CleanTargetFolder: true
+        - task: HelmInstaller@0
+          inputs:
+            helmVersion: '3.4.2'
+            checkLatestHelmVersion: false
+            installKubectl: true
+        - task: HelmDeploy@0
+          inputs:
+            command: 'package'
+            chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
+        - task: Docker@2
+          inputs:
+            containerRegistry: 'SaudeID-PRD Container Registry'
+            repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
+            command: 'buildAndPush'
+            Dockerfile: '**/Dockerfile*'
+            tags: '$(Environment.Name)-$(Build.BuildId)'
+        - task: HelmDeploy@0
+          inputs:
+            connectionType: 'Kubernetes Service Connection'
+            kubernetesServiceConnection: 'GCP - ${{ parameters.environment }}-Kubernetes'
+            namespace: '${{ parameters.namespace }}'
+            command: 'upgrade'
+            chartType: 'FilePath'
+            chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
+            releaseName: '${{ parameters.release }}'
+            install: true
+            waitForExecution: false
+            force: false
