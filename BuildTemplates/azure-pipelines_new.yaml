@@ -34,6 +34,10 @@ stages:
           stage: Development
           coveragetest: ${{ parameters.coveragetest }}
           multidockerfile: ${{ parameters.multidockerfile }}
+          dockerfile-1: ${{ parameters.dockerfile-1 }}
+          dockerfile-2: ${{ parameters.dockerfile-2 }}
+          dockerfile-3: ${{ parameters.dockerfile-3 }}
+
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
   - stage: Quality

@@ -12,6 +12,7 @@ parameters:
   default: []
 - name: coveragetest
   default: []
+<<<<<<< HEAD
 - name: multidockerfile
   default: []
 - name: dockerfile-1
@@ -20,6 +21,8 @@ parameters:
   default: []
 - name: dockerfile-3
   default: []
+=======
+>>>>>>> 31f49c848b9ec3a08d622004ca9ce47f0bc7ba8f
 
 jobs:
   # kubernetes: 'GCP - dev-Kubernetes'
