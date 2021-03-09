@@ -45,11 +45,6 @@ jobs:
           clean: true
         - checkout: templates
           clean: true
-        - task: Bash@3
-          inputs:
-            targetType: 'inline'
-            script: 'sed -i ''s/{{namespace}}/${{ parameters.namespace }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/*.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' $(Build.Repository.Name)/Dockerfile*' 
-            workingDirectory: '$(System.DefaultWorkingDirectory)'
         - ${{ if eq(parameters.coveragetest, 'true') }}:
           - bash: npm install
             displayName: Install
@@ -180,6 +175,11 @@ jobs:
               waitForExecution: false
               force: false  
         - ${{ if eq(parameters.multidockerfile, 'false') }}:
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: 'sed -i ''s/{{namespace}}/${{ parameters.namespace }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/*.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' $(Build.Repository.Name)/Dockerfile*' 
+              workingDirectory: '$(System.DefaultWorkingDirectory)'
           - task: Docker@2
             inputs:
               containerRegistry: 'SaudeID-PRD Container Registry'
@@ -187,15 +187,15 @@ jobs:
               command: 'buildAndPush'
               Dockerfile: '**/Dockerfile*'
               tags: '$(Environment.Name)-$(Build.BuildId)'
-        - task: HelmDeploy@0
-          inputs:
-            connectionType: 'Kubernetes Service Connection'
-            kubernetesServiceConnection: 'GCP - ${{ parameters.environment }}-Kubernetes'
-            namespace: '${{ parameters.namespace }}'
-            command: 'upgrade'
-            chartType: 'FilePath'
-            chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
-            releaseName: '${{ parameters.release }}'
-            install: true
-            waitForExecution: false
-            force: false
+          - task: HelmDeploy@0
+            inputs:
+              connectionType: 'Kubernetes Service Connection'
+              kubernetesServiceConnection: 'GCP - ${{ parameters.environment }}-Kubernetes'
+              namespace: '${{ parameters.namespace }}'
+              command: 'upgrade'
+              chartType: 'FilePath'
+              chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
+              releaseName: '${{ parameters.release }}'
+              install: true
+              waitForExecution: false
+              force: false
