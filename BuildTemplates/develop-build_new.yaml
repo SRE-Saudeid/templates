@@ -12,6 +12,14 @@ parameters:
   default: []
 - name: coveragetest
   default: []
+- name: multidockerfile
+  default: []
+- name: dockerfile1
+  default: []
+- name: dockerfile2
+  default: []
+- name: dockerfile3
+  default: []
 
 jobs:
   # kubernetes: 'GCP - dev-Kubernetes'
@@ -26,7 +34,7 @@ jobs:
         steps:
         - checkout: self
           clean: true
-        - checkout: git://Area-Engenharia/templates
+        - checkout: templates
           clean: true
         - task: Bash@3
           inputs:
@@ -89,13 +97,36 @@ jobs:
           inputs:
             command: 'package'
             chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
-        - task: Docker@2
-          inputs:
-            containerRegistry: 'SaudeID-PRD Container Registry'
-            repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
-            command: 'buildAndPush'
-            Dockerfile: '**/Dockerfile*'
-            tags: '$(Environment.Name)-$(Build.BuildId)'
+        - ${{ if eq(parameters.multidockerfile, 'true') }}:
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'SaudeID-PRD Container Registry'
+              repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
+              command: 'buildAndPush'
+              Dockerfile: $(Build.SourcesDirectory)/${{ parameters.dockerfile1 }}
+              tags: '$(Environment.Name)-$(Build.BuildId)'   
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'SaudeID-PRD Container Registry'
+              repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
+              command: 'buildAndPush'
+              Dockerfile: $(Build.SourcesDirectory)/${{ parameters.dockerfile2 }}
+              tags: '$(Environment.Name)-$(Build.BuildId)'
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'SaudeID-PRD Container Registry'
+              repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
+              command: 'buildAndPush'
+              Dockerfile: $(Build.SourcesDirectory)/${{ parameters.dockerfile3 }}
+              tags: '$(Environment.Name)-$(Build.BuildId)'       
+        - ${{ if eq(parameters.multidockerfile, 'false') }}:
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'SaudeID-PRD Container Registry'
+              repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
+              command: 'buildAndPush'
+              Dockerfile: '**/Dockerfile*'
+              tags: '$(Environment.Name)-$(Build.BuildId)'
         - task: HelmDeploy@0
           inputs:
             connectionType: 'Kubernetes Service Connection'
