@@ -14,11 +14,11 @@ parameters:
   default: []
 - name: multidockerfile
   default: []
-- name: dockerfile-1
+- name: dockerfile1
   default: []
-- name: dockerfile-2
+- name: dockerfile2
   default: []
-- name: dockerfile-3
+- name: dockerfile3
   default: []
 
 stages:
@@ -34,9 +34,9 @@ stages:
           stage: Development
           coveragetest: ${{ parameters.coveragetest }}
           multidockerfile: ${{ parameters.multidockerfile }}
-          dockerfile-1: ${{ parameters.dockerfile-1 }}
-          dockerfile-2: ${{ parameters.dockerfile-2 }}
-          dockerfile-3: ${{ parameters.dockerfile-3 }}
+          dockerfile1: ${{ parameters.dockerfile1 }}
+          dockerfile2: ${{ parameters.dockerfile2 }}
+          dockerfile3: ${{ parameters.dockerfile3 }}
 
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        

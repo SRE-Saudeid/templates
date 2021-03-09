@@ -15,11 +15,11 @@ parameters:
 <<<<<<< HEAD
 - name: multidockerfile
   default: []
-- name: dockerfile-1
+- name: dockerfile1
   default: []
-- name: dockerfile-2
+- name: dockerfile2
   default: []
-- name: dockerfile-3
+- name: dockerfile3
   default: []
 =======
 >>>>>>> 31f49c848b9ec3a08d622004ca9ce47f0bc7ba8f
@@ -106,21 +106,21 @@ jobs:
               containerRegistry: 'SaudeID-PRD Container Registry'
               repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
               command: 'buildAndPush'
-              Dockerfile: ${{ parameters.dockerfile-1 }}
+              Dockerfile: ${{ parameters.dockerfile1 }}
               tags: '$(Environment.Name)-$(Build.BuildId)'   
           - task: Docker@2
             inputs:
               containerRegistry: 'SaudeID-PRD Container Registry'
               repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
               command: 'buildAndPush'
-              Dockerfile: ${{ parameters.dockerfile-2 }}
+              Dockerfile: ${{ parameters.dockerfile2 }}
               tags: '$(Environment.Name)-$(Build.BuildId)'
           - task: Docker@2
             inputs:
               containerRegistry: 'SaudeID-PRD Container Registry'
               repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
               command: 'buildAndPush'
-              Dockerfile: ${{ parameters.dockerfile-3 }}
+              Dockerfile: ${{ parameters.dockerfile3 }}
               tags: '$(Environment.Name)-$(Build.BuildId)'       
         - ${{ if eq(parameters.multidockerfile, 'false') }}:
           - task: Docker@2
