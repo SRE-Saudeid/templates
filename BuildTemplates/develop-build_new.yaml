@@ -136,7 +136,7 @@ jobs:
               containerRegistry: 'SaudeID-PRD Container Registry'
               repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app2 }}'
               command: 'buildAndPush'
-              Dockerfile: '**/${{ parameters.dockerfile2 }}'
+              releaseName: '${{ parameters.app1 }}'
               tags: '$(Environment.Name)-$(Build.BuildId)'
           - task: HelmDeploy@0
             inputs:
@@ -146,7 +146,7 @@ jobs:
               command: 'upgrade'
               chartType: 'FilePath'
               chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
-              releaseName: '${{ parameters.release }}'
+              releaseName: '${{ parameters.app2 }}'
               install: true
               waitForExecution: false
               force: false
@@ -170,7 +170,7 @@ jobs:
               command: 'upgrade'
               chartType: 'FilePath'
               chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
-              releaseName: '${{ parameters.release }}'
+              releaseName: '${{ parameters.app3 }}'
               install: true
               waitForExecution: false
               force: false  
