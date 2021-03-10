@@ -89,14 +89,14 @@ jobs:
           inputs:
             command: 'package'
             chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
-        - task: Docker@2
-          inputs:
-            containerRegistry: 'SaudeID-PRD Container Registry'
-            repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
-            command: 'buildAndPush'
-            Dockerfile: '**/Dockerfile'
-            tags: '$(Environment.Name)-$(Build.BuildId)'
         - ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'SaudeID-PRD Container Registry'
+              repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
+              command: 'buildAndPush'
+              Dockerfile: '**/Dockerfile'
+              tags: '$(Environment.Name)-$(Build.BuildId)'
           - script: docker save gcr.io/saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }} > $(Build.ArtifactStagingDirectory)/cache.tar
           - task: HelmDeploy@0
             inputs:
