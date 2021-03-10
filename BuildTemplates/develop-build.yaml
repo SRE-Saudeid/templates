@@ -113,7 +113,9 @@ jobs:
               repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
               command: 'buildAndPush'
               Dockerfile: '**/Dockerfile'
-              tags: '$(Environment.Name)-$(Build.BuildId)'
+              tags: |
+                $(Environment.Name)-$(Build.BuildId)
+                latest
           - script: docker save gcr.io/saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }} > $(Build.ArtifactStagingDirectory)/cache.tar
           - task: HelmDeploy@0
             inputs:
@@ -156,7 +158,9 @@ jobs:
               repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
               command: 'buildAndPush'
               Dockerfile: '**/Dockerfile'
-              tags: '$(Environment.Name)-$(Build.BuildId)'
+              tags: |
+                $(Environment.Name)-$(Build.BuildId)
+                latest
           - task: HelmDeploy@0
             inputs:
               connectionType: 'Kubernetes Service Connection'
