@@ -97,7 +97,7 @@ jobs:
             Dockerfile: '**/Dockerfile'
             tags: '$(Environment.Name)-$(Build.BuildId)'
         - script: docker images
-        - script: docker save ${{ parameters.app }} > $(Pipeline.Workspace)/cache.tar
+        - script: docker save saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }} > $(Pipeline.Workspace)/cache.tar
         - task: HelmDeploy@0
           inputs:
             connectionType: 'Kubernetes Service Connection'
