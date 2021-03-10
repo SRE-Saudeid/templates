@@ -37,6 +37,7 @@ stages:
           release: qa-${{ parameters.app }}
           app: ${{ parameters.app }}
           stage: Quality
+          coveragetest: ${{ parameters.coveragetest }}
         
   - stage: Production
     jobs:
@@ -47,6 +48,8 @@ stages:
           release: prod-${{ parameters.app }}
           app: ${{ parameters.app }}
           stage: Production
+          coveragetest: ${{ parameters.coveragetest }}
+
 - ${{ if contains(variables['Build.SourceBranchName'], 'hotfix') }}:        
   - stage: Quality
     jobs:
@@ -57,6 +60,7 @@ stages:
           release: qa-${{ parameters.app }}
           app: ${{ parameters.app }}
           stage: Quality
+          coveragetest: ${{ parameters.coveragetest }}
         
   - stage: Production
     jobs:
@@ -67,3 +71,4 @@ stages:
           release: prod-${{ parameters.app }}
           app: ${{ parameters.app }}
           stage: Production
+          coveragetest: ${{ parameters.coveragetest }}
