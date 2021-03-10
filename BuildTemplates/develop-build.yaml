@@ -100,13 +100,13 @@ jobs:
               downloadType: 'single'
               artifactName: 'drop'
               downloadPath: '$(System.ArtifactsDirectory)'
-              continueOnError: true
+            continueOnError: true
           - task: Bash@3
             inputs:
               targetType: 'inline'
               script: 'docker load < $(Build.ArtifactStagingDirectory)/drop/cache.tar' 
               workingDirectory: '$(System.DefaultWorkingDirectory)'
-              continueOnError: true
+            continueOnError: true
           - task: Docker@2
             inputs:
               containerRegistry: 'SaudeID-PRD Container Registry'
@@ -145,13 +145,13 @@ jobs:
               downloadType: 'single'
               artifactName: 'drop'
               downloadPath: '$(System.ArtifactsDirectory)'
-              continueOnError: true
+            continueOnError: true
           - task: Bash@3
             inputs:
               targetType: 'inline'
               script: 'docker load < $(Build.ArtifactStagingDirectory)/drop/cache.tar' 
               workingDirectory: '$(System.DefaultWorkingDirectory)'
-              continueOnError: true
+            continueOnError: true
           - task: Docker@2
             inputs:
               containerRegistry: 'SaudeID-PRD Container Registry'
