@@ -115,3 +115,16 @@ jobs:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)'
               ArtifactName: 'drop'
               publishLocation: 'Container'
+        - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+          - task: HelmDeploy@0
+            inputs:
+              connectionType: 'Kubernetes Service Connection'
+              kubernetesServiceConnection: 'GCP - ${{ parameters.environment }}-Kubernetes'
+              namespace: '${{ parameters.namespace }}'
+              command: 'upgrade'
+              chartType: 'FilePath'
+              chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
+              releaseName: '${{ parameters.release }}'
+              install: true
+              waitForExecution: false
+              force: false
