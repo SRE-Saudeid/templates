@@ -96,7 +96,7 @@ jobs:
             command: 'buildAndPush'
             Dockerfile: '**/Dockerfile'
             tags: '$(Environment.Name)-$(Build.BuildId)'
-        - script: docker image
+        - script: docker images
         - task: HelmDeploy@0
           inputs:
             connectionType: 'Kubernetes Service Connection'
