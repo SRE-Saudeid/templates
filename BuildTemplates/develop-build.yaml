@@ -31,7 +31,7 @@ jobs:
         - task: Bash@3
           inputs:
             targetType: 'inline'
-            script: dockerimage.cache=$(grep FROM Dockerfile | cut -c6-)
+            script: dockerimage.cache=$(grep FROM $(Build.Repository.Name)/Dockerfile | cut -c6-)
         - task: Cache@2
           inputs:
             key: 'docker | "$(dockerimage.cache)" | caching-docker.yml'
