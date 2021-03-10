@@ -126,6 +126,7 @@ jobs:
               downloadType: 'single'
               artifactName: 'drop'
               downloadPath: '$(System.ArtifactsDirectory)'
+              continueOnError: true
           - script: ls $(System.ArtifactsDirectory)
           - task: HelmDeploy@0
             inputs:
