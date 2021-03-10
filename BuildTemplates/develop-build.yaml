@@ -128,6 +128,13 @@ jobs:
               downloadPath: '$(System.ArtifactsDirectory)'
               continueOnError: true
           - script: docker load < $(Build.ArtifactStagingDirectory)/drop/cache.tar
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'SaudeID-PRD Container Registry'
+              repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
+              command: 'buildAndPush'
+              Dockerfile: '**/Dockerfile'
+              tags: '$(Environment.Name)-$(Build.BuildId)'
           - script: ls $(System.ArtifactsDirectory)
           - task: HelmDeploy@0
             inputs:
