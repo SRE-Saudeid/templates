@@ -31,6 +31,24 @@ jobs:
         - task: Bash@3
           inputs:
             targetType: 'inline'
+            script: dockerimage.cache=$(grep FROM Dockerfile | cut -c6-)
+        - task: Cache@2
+          inputs:
+            key: 'docker | "$(dockerimage.cache)" | caching-docker.yml'
+            path: $(Pipeline.Workspace)/docker_cache
+            cacheHitVar: DOCKER_CACHE_RESTORED
+          displayName: Caching Docker image
+        - script: |
+            docker load < $(Pipeline.Workspace)/docker_cache/cache.tar
+          condition: and(not(canceled()), eq(variables.DOCKER_CACHE_RESTORED, 'true'))
+        - script: |
+            mkdir -p $(Pipeline.Workspace)/docker_cache
+            docker pull $(dockerimage.cache)
+            docker save $(dockerimage.cache) > $(Pipeline.Workspace)/docker_cache/cache.tar
+          condition: and(not(canceled()), or(failed(), ne(variables.DOCKER_CACHE_RESTORED, 'true')))
+        - task: Bash@3
+          inputs:
+            targetType: 'inline'
             script: 'env' 
             workingDirectory: '$(System.DefaultWorkingDirectory)'
         - task: Bash@3
