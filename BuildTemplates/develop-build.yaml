@@ -97,7 +97,7 @@ jobs:
             Dockerfile: '**/Dockerfile'
             tags: '$(Environment.Name)-$(Build.BuildId)'
         - ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
-          - script: docker save gcr.io/saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }} > $(Pipeline.Workspace)/cache.tar
+          - script: docker save gcr.io/saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }} > $(Build.ArtifactStagingDirectory)/cache.tar
           - task: HelmDeploy@0
             inputs:
               connectionType: 'Kubernetes Service Connection'
@@ -110,3 +110,8 @@ jobs:
               install: true
               waitForExecution: false
               force: false
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: 'drop'
+              publishLocation: 'Container'
