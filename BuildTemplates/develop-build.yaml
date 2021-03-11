@@ -116,7 +116,7 @@ jobs:
               tags: |
                 $(Environment.Name)-$(Build.BuildId)
                 latest
-          - script: docker save gcr.io/saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }} > $(Build.ArtifactStagingDirectory)/cache.tar
+          - script: docker save gcr.io/saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}:latest > $(Build.ArtifactStagingDirectory)/cache.tar
           - task: HelmDeploy@0
             inputs:
               connectionType: 'Kubernetes Service Connection'
