@@ -132,11 +132,6 @@ jobs:
               install: true
               waitForExecution: false
               force: false
-          - task: PublishBuildArtifacts@1
-            inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-              ArtifactName: 'drop'
-              publishLocation: 'Container'
         - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
           - task: Docker@2
             inputs:
