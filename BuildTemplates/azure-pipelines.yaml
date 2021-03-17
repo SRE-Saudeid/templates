@@ -11,7 +11,8 @@ parameters:
 - name: app
   default: []
 - name: coveragetest
-  default: []
+  type: boolean
+  default: false
 
 
 stages:
