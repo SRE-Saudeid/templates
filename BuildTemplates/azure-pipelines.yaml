@@ -13,7 +13,7 @@ parameters:
 - name: coveragetest
   type: boolean
   default: false
-- name: multidockerfile
+- name: deploymentconfig
   type: boolean
   default: false
 
@@ -28,7 +28,7 @@ stages:
           release: dev-${{ parameters.app }}
           app: ${{ parameters.app }}
           stage: Development
-          multidockerfile: ${{ parameters.multidockerfile }}
+          deploymentconfig: ${{ parameters.deploymentconfig }}
           coveragetest: ${{ parameters.coveragetest }}
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
@@ -41,7 +41,7 @@ stages:
           release: qa-${{ parameters.app }}
           app: ${{ parameters.app }}
           stage: Quality
-          multidockerfile: ${{ parameters.multidockerfile }}
+          deploymentconfig: ${{ parameters.deploymentconfig }}
           coveragetest: ${{ parameters.coveragetest }}
         
   - stage: Production
@@ -53,7 +53,7 @@ stages:
           release: prod-${{ parameters.app }}
           app: ${{ parameters.app }}
           stage: Production
-          multidockerfile: ${{ parameters.multidockerfile }}
+          deploymentconfig: ${{ parameters.deploymentconfig }}
           coveragetest: ${{ parameters.coveragetest }}
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'hotfix') }}:        
@@ -66,7 +66,7 @@ stages:
           release: qa-${{ parameters.app }}
           app: ${{ parameters.app }}
           stage: Quality
-          multidockerfile: ${{ parameters.multidockerfile }}
+          deploymentconfig: ${{ parameters.deploymentconfig }}
           coveragetest: ${{ parameters.coveragetest }}
         
   - stage: Production
@@ -78,5 +78,5 @@ stages:
           release: prod-${{ parameters.app }}
           app: ${{ parameters.app }}
           stage: Production
-          multidockerfile: ${{ parameters.multidockerfile }}
+          deploymentconfig: ${{ parameters.deploymentconfig }}
           coveragetest: ${{ parameters.coveragetest }}
