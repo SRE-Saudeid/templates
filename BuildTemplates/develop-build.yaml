@@ -14,6 +14,9 @@ parameters:
   default: []
 - name: deploymentconfig
   default: []
+- name: virtualservice
+  default: []
+
 
 jobs:
   # kubernetes: 'GCP - dev-Kubernetes'
@@ -32,6 +35,8 @@ jobs:
           clean: true
         - ${{ if eq(parameters.deploymentconfig, 'true') }}:
           - script: cp -r $(Build.Repository.Name)/deployment.yaml templates/helm/$(Environment.Name)/templates/
+        - ${{ if eq(parameters.deploymentconfig, 'true') }}:
+          - script: cp -r $(Build.Repository.Name)/virtualservice*.yaml templates/helm/$(Environment.Name)/templates/
         - task: Bash@3
           inputs:
             targetType: 'inline'
