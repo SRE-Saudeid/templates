@@ -12,7 +12,7 @@ parameters:
   default: []
 - name: coveragetest
   default: []
-- name: multidockerfile
+- name: deploymentconfig
   default: []
 
 jobs:
@@ -30,6 +30,8 @@ jobs:
           clean: true
         - checkout: git://Area-Engenharia/templates
           clean: true
+        - ${{ if eq(parameters.deploymentconfig, 'true') }}:
+          - script: cp -r $(Build.Repository.Name)/deployment.yaml templates/helm/$(Environment.Name)/templates/
         - task: Bash@3
           inputs:
             targetType: 'inline'
@@ -118,7 +120,6 @@ jobs:
               tags: |
                 $(Environment.Name)-$(Build.BuildId)
                 latest
-          - script: docker save gcr.io/saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}:latest > $(Build.ArtifactStagingDirectory)/cache.tar
           - task: HelmDeploy@0
             inputs:
               connectionType: 'Kubernetes Service Connection'
@@ -137,23 +138,6 @@ jobs:
               ArtifactName: 'drop'
               publishLocation: 'Container'
         - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
-          - task: DownloadBuildArtifacts@0
-            inputs:
-              buildType: 'specific'
-              project: $(System.TeamProjectId)
-              pipeline: $(System.DefinitionId)
-              buildVersionToDownload: 'latestFromBranch'
-              branchName: 'refs/heads/develop'
-              downloadType: 'single'
-              artifactName: 'drop'
-              downloadPath: '$(System.ArtifactsDirectory)'
-            continueOnError: true
-          - task: Bash@3
-            inputs:
-              targetType: 'inline'
-              script: 'docker load < $(Build.ArtifactStagingDirectory)/drop/cache.tar' 
-              workingDirectory: '$(System.DefaultWorkingDirectory)'
-            continueOnError: true
           - task: Docker@2
             inputs:
               containerRegistry: 'SaudeID-PRD Container Registry'
