@@ -12,6 +12,8 @@ parameters:
   default: []
 - name: coveragetest
   default: []
+- name: multidockerfile
+  default: []
 
 jobs:
   # kubernetes: 'GCP - dev-Kubernetes'
