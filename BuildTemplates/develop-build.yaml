@@ -37,7 +37,7 @@ jobs:
           - script: cp -r $(Build.Repository.Name)/deployment.yaml templates/helm/$(Environment.Name)/templates/
         - ${{ if eq(parameters.virtualservice, 'true') }}:
           - script: cp -r $(Build.Repository.Name)/virtualservice*.yaml templates/helm/$(Environment.Name)/templates/
-          - script: cp -r $(Build.Repository.Name)/service*.yaml templates/helm/$(Environment.Name)/templates/
+          - script: cp -r $(Build.Repository.Name)/service*.yaml templates/helm/$(Environment.Name)/templates/service.yaml
         - task: Bash@3
           inputs:
             targetType: 'inline'
