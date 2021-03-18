@@ -40,7 +40,7 @@ jobs:
           - script: cp -r $(Build.Repository.Name)/virtualservice*.yaml templates/helm/$(Environment.Name)/templates/virtualservice.yaml
           - script: cp -r $(Build.Repository.Name)/service*.yaml templates/helm/$(Environment.Name)/templates/service.yaml
         - ${{ if eq(parameters.autoscale, 'true') }}:
-          - script: templates/helm/$(Environment.Name)/options/hpa.yaml templates/helm/$(Environment.Name)/templates/
+          - script: templates/helm/options/hpa.yaml templates/helm/$(Environment.Name)/templates/
         - task: Bash@3
           inputs:
             targetType: 'inline'
