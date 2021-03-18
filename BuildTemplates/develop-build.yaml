@@ -120,7 +120,7 @@ jobs:
           #     script: 'docker load < $(Build.ArtifactStagingDirectory)/drop/cache.tar' 
           #     workingDirectory: '$(System.DefaultWorkingDirectory)'
           #   continueOnError: true
-          - ${{ if eq(parameters.deploymentconfig, 'true') }}:
+          - ${{ if eq(parameters.deploymentconfig, 'false') }}:
             - task: Docker@2
               inputs:
                 containerRegistry: 'SaudeID-PRD Container Registry'
@@ -130,7 +130,7 @@ jobs:
                 tags: |
                   $(Environment.Name)-$(Build.BuildId)
                   latest
-          - ${{ if eq(parameters.deploymentconfig, 'false') }}:
+          - ${{ if eq(parameters.deploymentconfig, 'true') }}:
             - task: Docker@2
               inputs:
                 containerRegistry: 'SaudeID-PRD Container Registry'
