@@ -19,7 +19,9 @@ parameters:
 - name: virtualservice
   type: boolean
   default: false
-
+- name: autoscale
+  type: boolean
+  default: false
 
 stages:
 - ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
@@ -35,6 +37,7 @@ stages:
           deploymentconfig: ${{ parameters.deploymentconfig }}
           virtualservice: ${{ parameters.virtualservice }}
           coveragetest: ${{ parameters.coveragetest }}
+          autoscale: ${{ parameters.autoscale }}
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
   - stage: Quality
@@ -49,7 +52,8 @@ stages:
           deploymentconfig: ${{ parameters.deploymentconfig }}
           virtualservice: ${{ parameters.virtualservice }}
           coveragetest: ${{ parameters.coveragetest }}
-        
+          autoscale: ${{ parameters.autoscale }}
+
   - stage: Production
     jobs:
     - template: develop-build.yaml@templates
@@ -62,6 +66,7 @@ stages:
           deploymentconfig: ${{ parameters.deploymentconfig }}
           virtualservice: ${{ parameters.virtualservice }}
           coveragetest: ${{ parameters.coveragetest }}
+          autoscale: ${{ parameters.autoscale }}
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'hotfix') }}:        
   - stage: Quality
@@ -76,6 +81,7 @@ stages:
           deploymentconfig: ${{ parameters.deploymentconfig }}
           virtualservice: ${{ parameters.virtualservice }}
           coveragetest: ${{ parameters.coveragetest }}
+          autoscale: ${{ parameters.autoscale }}
         
   - stage: Production
     jobs:
@@ -89,3 +95,4 @@ stages:
           deploymentconfig: ${{ parameters.deploymentconfig }}
           virtualservice: ${{ parameters.virtualservice }}
           coveragetest: ${{ parameters.coveragetest }}
+          autoscale: ${{ parameters.autoscale }}
