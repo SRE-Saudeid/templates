@@ -16,7 +16,8 @@ parameters:
   default: []
 - name: virtualservice
   default: []
-
+- name: autoscale
+  default: []
 
 jobs:
   # kubernetes: 'GCP - dev-Kubernetes'
