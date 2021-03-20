@@ -15,6 +15,7 @@ stages:
     jobs:
     - template: webapp-pipeline.yaml@templates
       parameters:
+          stage: Development      
           environment: dev
           bucket: dev-${{ parameters.bucket }}
           coveragetest: ${{ parameters.coveragetest }}
@@ -22,40 +23,37 @@ stages:
 - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
   - stage: Quality
     jobs:
-    - template: develop-build.yaml@templates
+    - template: webapp-pipeline.yaml@templates
       parameters:
-          environment: qa
-          namespace: ${{ parameters.namespace }}
-          release: qa-${{ parameters.app }}
-          app: ${{ parameters.app }}
-          stage: Quality
+          stage: Quality      
+          environment: dev
+          bucket: qa-${{ parameters.bucket }}
+          coveragetest: ${{ parameters.coveragetest }}
         
   - stage: Production
     jobs:
-    - template: develop-build.yaml@templates
+    - template: webapp-pipeline.yaml@templates
       parameters:
+          stage: Production      
           environment: prod
-          namespace: ${{ parameters.namespace }}
-          release: prod-${{ parameters.app }}
-          app: ${{ parameters.app }}
-          stage: Production
+          bucket: prod-${{ parameters.bucket }}
+          coveragetest: ${{ parameters.coveragetest }}
+
 - ${{ if contains(variables['Build.SourceBranchName'], 'hotfix') }}:        
   - stage: Quality
     jobs:
-    - template: develop-build.yaml@templates
+    - template: webapp-pipeline.yaml@templates
       parameters:
-          environment: qa
-          namespace: ${{ parameters.namespace }}
-          release: qa-${{ parameters.app }}
-          app: ${{ parameters.app }}
-          stage: Quality
+          stage: Quality      
+          environment: dev
+          bucket: qa-${{ parameters.bucket }}
+          coveragetest: ${{ parameters.coveragetest }}
         
   - stage: Production
     jobs:
-    - template: develop-build.yaml@templates
+    - template: webapp-pipeline.yaml@templates
       parameters:
+          stage: Production      
           environment: prod
-          namespace: ${{ parameters.namespace }}
-          release: prod-${{ parameters.app }}
-          app: ${{ parameters.app }}
-          stage: Production
+          bucket: prod-${{ parameters.bucket }}
+          coveragetest: ${{ parameters.coveragetest }}
