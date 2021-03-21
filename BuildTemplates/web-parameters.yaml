@@ -5,11 +5,12 @@ parameters:
   type: object
   default: []
 - name: coveragetest
-  default: []
+  type: boolean
+  default: false
 - name: bucket
   type: object
   default: []
-  
+
 stages:
 - ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
   - stage: Development
