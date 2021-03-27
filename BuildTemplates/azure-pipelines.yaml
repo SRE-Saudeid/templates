@@ -53,7 +53,7 @@ stages:
         autoscale: ${{ parameters.autoscale }}
 
 - stage: Production
-  condition: succeeded() or(contains(variables['Build.SourceBranch'], 'refs/heads/release'), contains(variables['Build.SourceBranch'], 'refs/heads/hotfix'))
+  condition: or(succeeded(), contains(variables['Build.SourceBranch'], 'refs/heads/release'), contains(variables['Build.SourceBranch'], 'refs/heads/hotfix'))
   jobs:
   - template: develop-build.yaml@templates
     parameters:
