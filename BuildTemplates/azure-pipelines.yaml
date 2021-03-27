@@ -26,7 +26,7 @@ parameters:
 stages:
 #- ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
 - stage: Development
-  condition: and(contains(variables['Build.SourceBranch'], 'refs/heads/dev'))
+  condition: contains(variables['Build.SourceBranch'], 'refs/heads/dev')
   jobs:
   - template: develop-build.yaml@templates
     parameters:
