@@ -42,7 +42,7 @@ stages:
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
   - stage: Quality
-    condition: and(succeeded(), contain(variables['Build.SourceBranch'], 'refs/heads/release'))
+#    condition: and(succeeded(), contain(variables['Build.SourceBranch'], 'refs/heads/release'))
     jobs:
     - template: develop-build.yaml@templates
       parameters:
@@ -57,7 +57,7 @@ stages:
           autoscale: ${{ parameters.autoscale }}
 
   - stage: Production
-    condition: and(succeeded(), contain(variables['Build.SourceBranch'], 'refs/heads/release'))
+#    condition: and(succeeded(), contain(variables['Build.SourceBranch'], 'refs/heads/release'))
     jobs:
     - template: develop-build.yaml@templates
       parameters:
@@ -73,7 +73,7 @@ stages:
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'refs/heads/hotfix') }}:        
   - stage: Quality
-    condition: and(succeeded(), contain(variables['Build.SourceBranch'], 'refs/heads/release'))
+#    condition: and(succeeded(), contain(variables['Build.SourceBranch'], 'refs/heads/release'))
     jobs:
     - template: develop-build.yaml@templates
       parameters:
@@ -88,7 +88,7 @@ stages:
           autoscale: ${{ parameters.autoscale }}
         
   - stage: Production
-    condition: and(succeeded(), contain(variables['Build.SourceBranch'], 'refs/heads/release'))
+#    condition: and(succeeded(), contain(variables['Build.SourceBranch'], 'refs/heads/release'))
     jobs:
     - template: develop-build.yaml@templates
       parameters:
