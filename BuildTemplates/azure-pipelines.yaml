@@ -1,13 +1,9 @@
-# Repo: templates/
-# File: azure-pipelines.yml
 parameters:
 - name: environment
   type: object
   default: []
 - name: namespace
   default: []
-#- name: release
-#  default: []
 - name: app
   default: []
 - name: coveragetest
@@ -71,7 +67,7 @@ stages:
           coveragetest: ${{ parameters.coveragetest }}
           autoscale: ${{ parameters.autoscale }}
 
-- ${{ if contains(variables['Build.SourceBranchName'], 'hotfix') }}:        
+- ${{ if contains(variables['Build.SourceBranchName'], 'hotfix*') }}:        
   - stage: Quality
     condition: contains(variables['Build.SourceBranch'], 'refs/heads/hotfix')
     jobs:
