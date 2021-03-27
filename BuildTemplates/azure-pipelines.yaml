@@ -24,21 +24,21 @@ parameters:
   default: false
 
 stages:
-- ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
-  - stage: Development
-    condition: and(contains(variables['Build.SourceBranch'], 'refs/heads/dev'))
-    jobs:
-    - template: develop-build.yaml@templates
-      parameters:
-          environment: dev
-          namespace: ${{ parameters.namespace }}
-          release: dev-${{ parameters.app }}
-          app: ${{ parameters.app }}
-          stage: Development
-          deploymentconfig: ${{ parameters.deploymentconfig }}
-          virtualservice: ${{ parameters.virtualservice }}
-          coveragetest: ${{ parameters.coveragetest }}
-          autoscale: ${{ parameters.autoscale }}
+#- ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
+- stage: Development
+  condition: and(contains(variables['Build.SourceBranch'], 'refs/heads/dev'))
+  jobs:
+  - template: develop-build.yaml@templates
+    parameters:
+        environment: dev
+        namespace: ${{ parameters.namespace }}
+        release: dev-${{ parameters.app }}
+        app: ${{ parameters.app }}
+        stage: Development
+        deploymentconfig: ${{ parameters.deploymentconfig }}
+        virtualservice: ${{ parameters.virtualservice }}
+        coveragetest: ${{ parameters.coveragetest }}
+        autoscale: ${{ parameters.autoscale }}
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
   - stage: Quality
