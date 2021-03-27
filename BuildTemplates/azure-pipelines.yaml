@@ -42,7 +42,7 @@ stages:
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
   - stage: Quality
-    condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'release'))
+    condition: contains(variables['Build.SourceBranch'], 'release')
     jobs:
     - template: develop-build.yaml@templates
       parameters:
