@@ -24,35 +24,9 @@ parameters:
   default: false
 
 stages:
-- stage: Build
-  jobs:
-    # kubernetes: 'GCP - dev-Kubernetes'
-  - deployment: Build
-    displayName: Build
-    pool:
-      vmImage: 'ubuntu-latest'
-    environment: build
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - checkout: self
-            clean: true
-          - checkout: templates
-            clean: true
-          - bash: npm install
-            displayName: Install
-            continueOnError: true
-            workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
-          - script: npm run build
-            continueOnError: true
-            displayName: Build
-            workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
-          - script: ls
-            workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
- 
 - ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
   - stage: Development
+    condition: and(contains(variables['Build.SourceBranch'], 'refs/heads/dev'))
     jobs:
     - template: develop-build.yaml@templates
       parameters:
@@ -68,6 +42,7 @@ stages:
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
   - stage: Quality
+    condition: and(succeeded(), contain(variables['Build.SourceBranch'], 'refs/heads/release'))
     jobs:
     - template: develop-build.yaml@templates
       parameters:
@@ -82,6 +57,7 @@ stages:
           autoscale: ${{ parameters.autoscale }}
 
   - stage: Production
+    condition: and(succeeded(), contain(variables['Build.SourceBranch'], 'refs/heads/release'))
     jobs:
     - template: develop-build.yaml@templates
       parameters:
@@ -97,6 +73,7 @@ stages:
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'hotfix') }}:        
   - stage: Quality
+    condition: and(succeeded(), contain(variables['Build.SourceBranch'], 'refs/heads/release'))
     jobs:
     - template: develop-build.yaml@templates
       parameters:
@@ -111,6 +88,7 @@ stages:
           autoscale: ${{ parameters.autoscale }}
         
   - stage: Production
+    condition: and(succeeded(), contain(variables['Build.SourceBranch'], 'refs/heads/release'))
     jobs:
     - template: develop-build.yaml@templates
       parameters:
