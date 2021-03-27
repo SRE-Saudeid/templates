@@ -48,7 +48,7 @@ stages:
             continueOnError: true
             displayName: Build
             workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
-
+          - script: ls
 - ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
   - stage: Development
     jobs:
