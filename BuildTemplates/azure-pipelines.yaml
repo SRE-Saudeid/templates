@@ -25,28 +25,28 @@ parameters:
 
 stages:
 - stage: Build
-jobs:
-  # kubernetes: 'GCP - dev-Kubernetes'
-- deployment: ${{ parameters.stage }}
-  displayName: ${{ parameters.stage }}
-  pool:
-    vmImage: 'ubuntu-latest'
-  environment: ${{ parameters.environment }}
-  strategy:
-    runOnce:
-      deploy:
-        steps:
-        - checkout: self
-          clean: true
-        - checkout: templates
-          clean: true
-        - bash: npm install
-          displayName: Install
-          continueOnError: true
-          workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
-        - script: npm run build
-          continueOnError: true
-          workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
+  jobs:
+    # kubernetes: 'GCP - dev-Kubernetes'
+  - deployment: Build
+    displayName: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: build
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: self
+            clean: true
+          - checkout: templates
+            clean: true
+          - bash: npm install
+            displayName: Install
+            continueOnError: true
+            workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
+          - script: npm run build
+            continueOnError: true
+            workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
   - stage: Development
