@@ -40,36 +40,36 @@ stages:
         coveragetest: ${{ parameters.coveragetest }}
         autoscale: ${{ parameters.autoscale }}
 
-- ${{ if contains(variables['Build.SourceBranchName'], 'release*') }}:        
-  - stage: Quality
-    condition: contains(variables['Build.SourceBranch'], 'refs/heads/release')
-    jobs:
-    - template: develop-build.yaml@templates
-      parameters:
-          environment: qa
-          namespace: ${{ parameters.namespace }}
-          release: qa-${{ parameters.app }}
-          app: ${{ parameters.app }}
-          stage: Quality
-          deploymentconfig: ${{ parameters.deploymentconfig }}
-          virtualservice: ${{ parameters.virtualservice }}
-          coveragetest: ${{ parameters.coveragetest }}
-          autoscale: ${{ parameters.autoscale }}
+#- ${{ if contains(variables['Build.SourceBranchName'], 'release*') }}:        
+- stage: Quality
+  condition: contains(variables['Build.SourceBranch'], 'refs/heads/release')
+  jobs:
+  - template: develop-build.yaml@templates
+    parameters:
+        environment: qa
+        namespace: ${{ parameters.namespace }}
+        release: qa-${{ parameters.app }}
+        app: ${{ parameters.app }}
+        stage: Quality
+        deploymentconfig: ${{ parameters.deploymentconfig }}
+        virtualservice: ${{ parameters.virtualservice }}
+        coveragetest: ${{ parameters.coveragetest }}
+        autoscale: ${{ parameters.autoscale }}
 
-  - stage: Production
-    condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'refs/heads/release'))
-    jobs:
-    - template: develop-build.yaml@templates
-      parameters:
-          environment: prod
-          namespace: ${{ parameters.namespace }}
-          release: prod-${{ parameters.app }}
-          app: ${{ parameters.app }}
-          stage: Production
-          deploymentconfig: ${{ parameters.deploymentconfig }}
-          virtualservice: ${{ parameters.virtualservice }}
-          coveragetest: ${{ parameters.coveragetest }}
-          autoscale: ${{ parameters.autoscale }}
+- stage: Production
+  condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'refs/heads/release'))
+  jobs:
+  - template: develop-build.yaml@templates
+    parameters:
+        environment: prod
+        namespace: ${{ parameters.namespace }}
+        release: prod-${{ parameters.app }}
+        app: ${{ parameters.app }}
+        stage: Production
+        deploymentconfig: ${{ parameters.deploymentconfig }}
+        virtualservice: ${{ parameters.virtualservice }}
+        coveragetest: ${{ parameters.coveragetest }}
+        autoscale: ${{ parameters.autoscale }}
 
 - ${{ if contains(variables['Build.SourceBranchName'], 'refs/heads/hotfix') }}:        
   - stage: Quality
