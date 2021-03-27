@@ -40,7 +40,7 @@ stages:
         coveragetest: ${{ parameters.coveragetest }}
         autoscale: ${{ parameters.autoscale }}
 
-- ${{ if contains(variables['Build.SourceBranchName'], 'release/*') }}:        
+- ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
   - stage: Quality
     condition: and(succeeded(), contain(variables['Build.SourceBranch'], 'refs/heads/release'))
     jobs:
