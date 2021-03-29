@@ -11,18 +11,14 @@ parameters:
 - name: stage
   default: []
 - name: coveragetest
-  type: boolean
-  default: false
+  default: []
 - name: deploymentconfig
-  type: boolean
-  default: false
+  default: []
 - name: virtualservice
-  type: boolean
-  default: false
+  default: []
 - name: autoscale
-  type: boolean
-  default: false
-  
+  default: []
+
 jobs:
   # kubernetes: 'GCP - dev-Kubernetes'
 - deployment: ${{ parameters.stage }}
