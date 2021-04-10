@@ -28,7 +28,7 @@ jobs:
   environment: ${{ parameters.environment }}
   strategy:
     runOnce:
-      deploy:
+      preDeploy:
         steps:
         - checkout: self
           clean: true
@@ -123,6 +123,19 @@ jobs:
               tags: |
                 $(Environment.Name)-$(Build.BuildId)
                 latest
+        - task: PublishBuildArtifacts@1
+          inputs:
+            PathtoPublish: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
+            ArtifactName: 'helm'
+            publishLocation: 'Container'
+      deploy:
+        steps:
+        - task: DownloadBuildArtifacts@0
+          inputs:
+            buildType: 'current'
+            downloadType: 'single'
+            artifactName: 'helm'
+            downloadPath: '$(System.DefaultWorkingDirectory)'
         - task: HelmDeploy@0
           inputs:
             connectionType: 'Kubernetes Service Connection'
@@ -130,7 +143,7 @@ jobs:
             namespace: '${{ parameters.namespace }}'
             command: 'upgrade'
             chartType: 'FilePath'
-            chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
+            chartPath: '$(System.DefaultWorkingDirectory)/helm'
             releaseName: '${{ parameters.release }}'
             install: true
             waitForExecution: false
