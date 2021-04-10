@@ -1,69 +1,68 @@
-# Repo: templates/
-# File: azure-pipelines.yml
 parameters:
 - name: environment
   type: object
   default: []
 - name: namespace
   default: []
-#- name: release
-#  default: []
 - name: app
   default: []
 - name: coveragetest
-  default: []
-
+  type: boolean
+  default: false
+- name: deploymentconfig
+  type: boolean
+  default: false
+- name: virtualservice
+  type: boolean
+  default: false
+- name: autoscale
+  type: boolean
+  default: false
 
 stages:
-- ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
-  - stage: Development
-    jobs:
-    - template: develop-build.yaml@templates
-      parameters:
-          environment: dev
-          namespace: ${{ parameters.namespace }}
-          release: dev-${{ parameters.app }}
-          app: ${{ parameters.app }}
-          stage: Development
-          coveragetest: ${{ parameters.coveragetest }}
+#- ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
+- stage: Development
+  condition: contains(variables['Build.SourceBranch'], 'refs/heads/dev')
+  jobs:
+  - template: develop-build.yaml@templates
+    parameters:
+        environment: dev
+        namespace: ${{ parameters.namespace }}
+        release: dev-${{ parameters.app }}
+        app: ${{ parameters.app }}
+        stage: Development
+        deploymentconfig: ${{ parameters.deploymentconfig }}
+        virtualservice: ${{ parameters.virtualservice }}
+        coveragetest: ${{ parameters.coveragetest }}
+        autoscale: ${{ parameters.autoscale }}
 
-- ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
-  - stage: Quality
-    jobs:
-    - template: develop-build.yaml@templates
-      parameters:
-          environment: qa
-          namespace: ${{ parameters.namespace }}
-          release: qa-${{ parameters.app }}
-          app: ${{ parameters.app }}
-          stage: Quality
-        
-  - stage: Production
-    jobs:
-    - template: develop-build.yaml@templates
-      parameters:
-          environment: prod
-          namespace: ${{ parameters.namespace }}
-          release: prod-${{ parameters.app }}
-          app: ${{ parameters.app }}
-          stage: Production
-- ${{ if contains(variables['Build.SourceBranchName'], 'hotfix') }}:        
-  - stage: Quality
-    jobs:
-    - template: develop-build.yaml@templates
-      parameters:
-          environment: qa
-          namespace: ${{ parameters.namespace }}
-          release: qa-${{ parameters.app }}
-          app: ${{ parameters.app }}
-          stage: Quality
-        
-  - stage: Production
-    jobs:
-    - template: develop-build.yaml@templates
-      parameters:
-          environment: prod
-          namespace: ${{ parameters.namespace }}
-          release: prod-${{ parameters.app }}
-          app: ${{ parameters.app }}
-          stage: Production
+#- ${{ if contains(variables['Build.SourceBranchName'], 'release*') }}:        
+- stage: Quality
+  condition: or(contains(variables['Build.SourceBranch'], 'refs/heads/release'), contains(variables['Build.SourceBranch'], 'refs/heads/hotfix'))
+  jobs:
+  - template: develop-build.yaml@templates
+    parameters:
+        environment: qa
+        namespace: ${{ parameters.namespace }}
+        release: qa-${{ parameters.app }}
+        app: ${{ parameters.app }}
+        stage: Quality
+        deploymentconfig: ${{ parameters.deploymentconfig }}
+        virtualservice: ${{ parameters.virtualservice }}
+        coveragetest: ${{ parameters.coveragetest }}
+        autoscale: ${{ parameters.autoscale }}
+
+- stage: Production
+  condition: or(succeeded(), contains(variables['Build.SourceBranch'], 'refs/heads/release'), contains(variables['Build.SourceBranch'], 'refs/heads/hotfix'))
+  jobs:
+  - template: develop-build.yaml@templates
+    parameters:
+        environment: prod
+        namespace: ${{ parameters.namespace }}
+        release: prod-${{ parameters.app }}
+        app: ${{ parameters.app }}
+        stage: Production
+        deploymentconfig: ${{ parameters.deploymentconfig }}
+        virtualservice: ${{ parameters.virtualservice }}
+        coveragetest: ${{ parameters.coveragetest }}
+        autoscale: ${{ parameters.autoscale }}

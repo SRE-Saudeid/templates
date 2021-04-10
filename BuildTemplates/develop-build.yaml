@@ -12,6 +12,12 @@ parameters:
   default: []
 - name: coveragetest
   default: []
+- name: deploymentconfig
+  default: []
+- name: virtualservice
+  default: []
+- name: autoscale
+  default: []
 
 jobs:
   # kubernetes: 'GCP - dev-Kubernetes'
@@ -28,10 +34,18 @@ jobs:
           clean: true
         - checkout: templates
           clean: true
+        - ${{ if eq(parameters.deploymentconfig, 'true') }}:
+          - script: cp -r $(Build.Repository.Name)/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml
+        - ${{ if eq(parameters.virtualservice, 'true') }}:
+          - script: cp -r $(Build.Repository.Name)/virtualservice*.yaml templates/helm/$(Environment.Name)/templates/virtualservice.yaml
+          - script: cp -r $(Build.Repository.Name)/service*.yaml templates/helm/$(Environment.Name)/templates/service.yaml
+        - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+          - ${{ if eq(parameters.autoscale, 'true') }}:
+            - script: cp -r templates/helm/options/hpa.yaml templates/helm/$(Environment.Name)/templates/
         - task: Bash@3
           inputs:
             targetType: 'inline'
-            script: 'sed -i ''s/{{namespace}}/${{ parameters.namespace }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/*.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' $(Build.Repository.Name)/Dockerfile' 
+            script: 'sed -i ''s/{{namespace}}/${{ parameters.namespace }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/*.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' $(Build.Repository.Name)/Dockerfile*' 
             workingDirectory: '$(System.DefaultWorkingDirectory)'
         - ${{ if eq(parameters.coveragetest, 'true') }}:
           - bash: npm install
@@ -89,13 +103,26 @@ jobs:
           inputs:
             command: 'package'
             chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
-        - task: Docker@2
-          inputs:
-            containerRegistry: 'SaudeID-PRD Container Registry'
-            repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
-            command: 'buildAndPush'
-            Dockerfile: '**/Dockerfile'
-            tags: '$(Environment.Name)-$(Build.BuildId)'
+        - ${{ if eq(parameters.deploymentconfig, 'false') }}:
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'SaudeID-PRD Container Registry'
+              repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
+              command: 'buildAndPush'
+              Dockerfile: '**/Dockerfile'
+              tags: |
+                $(Environment.Name)-$(Build.BuildId)
+                latest
+        - ${{ if eq(parameters.deploymentconfig, 'true') }}:
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'SaudeID-PRD Container Registry'
+              repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
+              command: 'buildAndPush'
+              Dockerfile: '**/DockerfileDeployment'
+              tags: |
+                $(Environment.Name)-$(Build.BuildId)
+                latest
         - task: HelmDeploy@0
           inputs:
             connectionType: 'Kubernetes Service Connection'
