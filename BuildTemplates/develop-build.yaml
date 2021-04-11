@@ -35,8 +35,8 @@ jobs:
         - checkout: templates
           clean: true
         - script: env
-        - script: env >> env.txt
-        - script: cat env.txt
+        - script: env >> variables.env
+        - script: cat variables.env
         - ${{ if eq(parameters.deploymentconfig, 'true') }}:
           - script: cp -r $(Build.Repository.Name)/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml
         - ${{ if eq(parameters.virtualservice, 'true') }}:
@@ -113,7 +113,7 @@ jobs:
               repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
               command: 'buildAndPush'
               Dockerfile: '**/Dockerfile'
-              arguments: --env-file=env.txt
+              arguments: --env-file=variables.env
               tags: |
                 $(Environment.Name)-$(Build.BuildId)
                 latest
@@ -124,7 +124,7 @@ jobs:
               repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
               command: 'buildAndPush'
               Dockerfile: '**/DockerfileDeployment'
-              arguments: --env-file=env.txt
+              arguments: --env-file=variables.env
               tags: |
                 $(Environment.Name)-$(Build.BuildId)
                 latest
