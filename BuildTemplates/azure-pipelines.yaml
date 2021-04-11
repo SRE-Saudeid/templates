@@ -23,7 +23,7 @@ stages:
 #- ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
 - stage: Development
   variables:
-  - group: dev
+  - group: develop
   condition: contains(variables['Build.SourceBranch'], 'refs/heads/dev')
   jobs:
   - template: develop-build.yaml@templates
@@ -40,6 +40,8 @@ stages:
 
 #- ${{ if contains(variables['Build.SourceBranchName'], 'release*') }}:        
 - stage: Quality
+  variables:
+  - group: quality
   condition: or(contains(variables['Build.SourceBranch'], 'refs/heads/release'), contains(variables['Build.SourceBranch'], 'refs/heads/hotfix'))
   jobs:
   - template: develop-build.yaml@templates
@@ -55,6 +57,8 @@ stages:
         autoscale: ${{ parameters.autoscale }}
 
 - stage: Production
+  variables:
+  - group: production
   condition: or(succeeded(), contains(variables['Build.SourceBranch'], 'refs/heads/release'), contains(variables['Build.SourceBranch'], 'refs/heads/hotfix'))
   jobs:
   - template: develop-build.yaml@templates
