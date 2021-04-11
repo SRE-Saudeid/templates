@@ -34,7 +34,9 @@ jobs:
           clean: true
         - checkout: templates
           clean: true
+        - script: env
         - script: env >> env.txt
+        - script: cat env.txt
         - ${{ if eq(parameters.deploymentconfig, 'true') }}:
           - script: cp -r $(Build.Repository.Name)/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml
         - ${{ if eq(parameters.virtualservice, 'true') }}:
