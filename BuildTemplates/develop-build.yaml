@@ -113,7 +113,7 @@ jobs:
               repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
               command: 'build'
               Dockerfile: '**/Dockerfile'
-              arguments: --env-file=variables.env
+              arguments: --env-file variables.env
               tags: |
                 $(Environment.Name)-$(Build.BuildId)
                 latest
@@ -124,7 +124,7 @@ jobs:
               repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
               command: 'buildAndPush'
               Dockerfile: '**/DockerfileDeployment'
-              arguments: --env-file=variables.env
+              arguments: --env-file variables.env
               tags: |
                 $(Environment.Name)-$(Build.BuildId)
                 latest
