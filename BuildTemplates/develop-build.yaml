@@ -55,7 +55,7 @@ jobs:
             containerRegistryType: 'Azure Container Registry'
             configMapName: '$(Environment.Name)-config'
             forceUpdateConfigMap: true
-            configMapArguments: '--from-env-file=variables.env --dry-run=client |kubectl apply -f -'
+            configMapArguments: '--from-env-file=variables.env --dry-run=client -o yaml |kubectl apply -f -'
             workingDirectory: 'templates/helm/$(Environment.Name)/templates/'
             outputFormat: 'yaml'
         - task: Bash@3
