@@ -38,7 +38,7 @@ jobs:
         - task: Kubernetes@1
           inputs:
             connectionType: 'Kubernetes Service Connection'
-            kubernetesServiceEndpoint: 'GCP - $(Environment.Name)-Kubernetes'
+            kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
             namespace: '${{ parameters.namespace }}'
             command: 'create'
             arguments: |
