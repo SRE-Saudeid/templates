@@ -51,11 +51,10 @@ jobs:
             kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
             namespace: '${{ parameters.namespace }}'
             command: 'login'
-        - script: kubectl create configmap -n ${{ parameters.namespace }} ${{ parameters.environment }}-config --from-env-file=variables.env -o yaml --dry-run=client | kubectl apply -f -
         - task: Bash@3
           inputs:
             targetType: 'inline'
-            script: 'kubectl create configmap $(Environment.Name)-variables --from-env-file=variables.env -o yaml --dry-run=client | kubectl apply -f -' 
+            script: 'kubectl create configmap $(Environment.Name)-config --from-env-file=variables.env -o yaml --dry-run=client | kubectl apply -f -' 
             workingDirectory: 'templates/helm/$(Environment.Name)/templates/'        
         - ${{ if eq(parameters.deploymentconfig, 'true') }}:
           - script: cp -r $(Build.Repository.Name)/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml
