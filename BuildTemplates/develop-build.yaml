@@ -34,7 +34,7 @@ jobs:
           clean: true
         - checkout: templates
           clean: true
-        - script: env >> templates/helm/$(Environment.Name)/templates/variables.env
+        - script: env >> $(System.DefaultWorkingDirectory)/variables.env
         # - task: Kubernetes@1
         #   inputs:
         #     connectionType: 'Kubernetes Service Connection'
@@ -55,7 +55,7 @@ jobs:
           inputs:
             targetType: 'inline'
             script: 'kubectl create -n ${{ parameters.namespace }} configmap $(Environment.Name)-config --from-env-file=variables.env -o yaml --dry-run=client | kubectl apply -f -' 
-            workingDirectory: 'templates/helm/$(Environment.Name)/templates/'        
+            workingDirectory: '$(System.DefaultWorkingDirectory)'        
         - ${{ if eq(parameters.deploymentconfig, 'true') }}:
           - script: cp -r $(Build.Repository.Name)/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml
         - ${{ if eq(parameters.virtualservice, 'true') }}:
