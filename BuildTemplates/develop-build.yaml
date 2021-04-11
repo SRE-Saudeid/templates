@@ -35,16 +35,29 @@ jobs:
         - checkout: templates
           clean: true
         - script: env >> templates/helm/$(Environment.Name)/templates/variables.env
+        # - task: Kubernetes@1
+        #   inputs:
+        #     connectionType: 'Kubernetes Service Connection'
+        #     kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
+        #     namespace: '${{ parameters.namespace }}'
+        #     command: 'create'
+        #     arguments: |
+        #       'configmap $(Environment.Name)-config --from-env-file=variables.env -o yaml --dry-run=client | kubectl apply -f -'
+        #     secretType: 'dockerRegistry'
+        #     containerRegistryType: 'Azure Container Registry'
         - task: Kubernetes@1
           inputs:
             connectionType: 'Kubernetes Service Connection'
             kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
             namespace: '${{ parameters.namespace }}'
             command: 'create'
-            arguments: |
-              'configmap $(Environment.Name)-config --from-env-file=variables.env -o yaml --dry-run=client | kubectl apply -f -'
             secretType: 'dockerRegistry'
             containerRegistryType: 'Azure Container Registry'
+            configMapName: '$(Environment.Name)-config'
+            forceUpdateConfigMap: true
+            configMapArguments: '--from-env-file=variables.env --dry-run=client'
+            workingDirectory: 'templates/helm/$(Environment.Name)/templates/'
+            outputFormat: 'yaml'
         - task: Bash@3
           inputs:
             targetType: 'inline'
