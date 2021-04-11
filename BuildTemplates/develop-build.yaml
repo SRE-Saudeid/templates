@@ -111,7 +111,7 @@ jobs:
             inputs:
               containerRegistry: 'SaudeID-PRD Container Registry'
               repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
-              command: 'buildAndPush'
+              command: 'build'
               Dockerfile: '**/Dockerfile'
               arguments: --env-file=variables.env
               tags: |
