@@ -23,7 +23,7 @@ stages:
 #- ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
 - stage: Development
   variables:
-  - group: develop
+  - group: development
   condition: contains(variables['Build.SourceBranch'], 'refs/heads/dev')
   jobs:
   - template: develop-build.yaml@templates
