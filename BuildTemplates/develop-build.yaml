@@ -27,12 +27,34 @@ jobs:
   environment: ${{ parameters.environment }}
   strategy:
     runOnce:
-      deploy:
+      preDeploy:
         steps:
         - checkout: self
           clean: true
         - checkout: templates
           clean: true
+        - script: env >> $(System.DefaultWorkingDirectory)/variables.env
+        # - task: Kubernetes@1
+        #   inputs:
+        #     connectionType: 'Kubernetes Service Connection'
+        #     kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
+        #     namespace: '${{ parameters.namespace }}'
+        #     command: 'create'
+        #     arguments: |
+        #       'configmap $(Environment.Name)-config --from-env-file=variables.env -o yaml --dry-run=client | kubectl apply -f -'
+        #     secretType: 'dockerRegistry'
+        #     containerRegistryType: 'Azure Container Registry'
+        - task: Kubernetes@1
+          inputs:
+            connectionType: 'Kubernetes Service Connection'
+            kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
+            namespace: '${{ parameters.namespace }}'
+            command: 'login'
+        - task: Bash@3
+          inputs:
+            targetType: 'inline'
+            script: 'kubectl create -n ${{ parameters.namespace }} configmap $(Environment.Name)-config --from-env-file=variables.env -o yaml --dry-run=client | kubectl apply -f -' 
+            workingDirectory: '$(System.DefaultWorkingDirectory)'        
         - ${{ if eq(parameters.deploymentconfig, 'true') }}:
           - script: cp -r $(Build.Repository.Name)/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml
         - ${{ if eq(parameters.virtualservice, 'true') }}:
@@ -122,6 +144,19 @@ jobs:
               tags: |
                 $(Environment.Name)-$(Build.BuildId)
                 latest
+        - task: PublishBuildArtifacts@1
+          inputs:
+            PathtoPublish: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
+            ArtifactName: 'helm'
+            publishLocation: 'Container'
+      deploy:
+        steps:
+        - task: DownloadBuildArtifacts@0
+          inputs:
+            buildType: 'current'
+            downloadType: 'single'
+            artifactName: 'helm'
+            downloadPath: '$(System.DefaultWorkingDirectory)'
         - task: HelmDeploy@0
           inputs:
             connectionType: 'Kubernetes Service Connection'
@@ -129,7 +164,7 @@ jobs:
             namespace: '${{ parameters.namespace }}'
             command: 'upgrade'
             chartType: 'FilePath'
-            chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
+            chartPath: '$(System.DefaultWorkingDirectory)/helm'
             releaseName: '${{ parameters.release }}'
             install: true
             waitForExecution: false
