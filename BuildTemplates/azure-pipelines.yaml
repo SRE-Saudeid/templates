@@ -41,6 +41,7 @@ stages:
         virtualservice: ${{ parameters.virtualservice }}
         coveragetest: ${{ parameters.coveragetest }}
         autoscale: ${{ parameters.autoscale }}
+        variables: ${{ parameters.variables }}
 
 #- ${{ if contains(variables['Build.SourceBranchName'], 'release*') }}:        
 - stage: Quality
@@ -60,6 +61,7 @@ stages:
         virtualservice: ${{ parameters.virtualservice }}
         coveragetest: ${{ parameters.coveragetest }}
         autoscale: ${{ parameters.autoscale }}
+        variables: ${{ parameters.variables }}
 
 - stage: Production
   ${{ if  parameters.variables }}:
@@ -78,3 +80,4 @@ stages:
         virtualservice: ${{ parameters.virtualservice }}
         coveragetest: ${{ parameters.coveragetest }}
         autoscale: ${{ parameters.autoscale }}
+        variables: ${{ parameters.variables }}
