@@ -18,6 +18,10 @@ parameters:
   default: []
 - name: autoscale
   default: []
+- name: variables
+  type: string
+  default: ''
+
 
 jobs:
   # kubernetes: 'GCP - dev-Kubernetes'
@@ -34,28 +38,28 @@ jobs:
           clean: true
         - checkout: templates
           clean: true
-        - script: env >> $(System.DefaultWorkingDirectory)/variables.env
-        # - task: Kubernetes@1
-        #   inputs:
-        #     connectionType: 'Kubernetes Service Connection'
-        #     kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
-        #     namespace: '${{ parameters.namespace }}'
-        #     command: 'create'
-        #     arguments: |
-        #       'configmap $(Environment.Name)-config --from-env-file=variables.env -o yaml --dry-run=client | kubectl apply -f -'
-        #     secretType: 'dockerRegistry'
-        #     containerRegistryType: 'Azure Container Registry'
         - task: Kubernetes@1
           inputs:
             connectionType: 'Kubernetes Service Connection'
             kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
             namespace: '${{ parameters.namespace }}'
             command: 'login'
-        - task: Bash@3
+        - task: HelmInstaller@0
           inputs:
-            targetType: 'inline'
-            script: 'kubectl create -n ${{ parameters.namespace }} configmap $(Environment.Name)-config --from-env-file=variables.env -o yaml --dry-run=client | kubectl apply -f -' 
-            workingDirectory: '$(System.DefaultWorkingDirectory)'        
+            helmVersion: '3.4.2'
+            checkLatestHelmVersion: false
+            installKubectl: true
+        - ${{ if parameters.variables }}:
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: 'env |sort >> variables.env' 
+              workingDirectory: '$(System.DefaultWorkingDirectory)'  
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: 'kubectl create -n ${{ parameters.namespace }} configmap $(Environment.Name)-config --from-env-file variables.env -o yaml --dry-run=client |kubectl apply -f -' 
+              workingDirectory: '$(System.DefaultWorkingDirectory)'    
         - ${{ if eq(parameters.deploymentconfig, 'true') }}:
           - script: cp -r $(Build.Repository.Name)/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml
         - ${{ if eq(parameters.virtualservice, 'true') }}:
@@ -116,11 +120,6 @@ jobs:
                 !node_modules/**
               TargetFolder: $(Build.BinariesDirectory)
               CleanTargetFolder: true
-        - task: HelmInstaller@0
-          inputs:
-            helmVersion: '3.4.2'
-            checkLatestHelmVersion: false
-            installKubectl: true
         - task: HelmDeploy@0
           inputs:
             command: 'package'
