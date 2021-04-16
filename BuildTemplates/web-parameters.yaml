@@ -12,50 +12,31 @@ parameters:
   default: []
 
 stages:
-- ${{ if contains(variables['Build.SourceBranchName'], 'dev') }}:
-  - stage: Development
-    jobs:
-    - template: webapp-pipeline.yaml@templates
-      parameters:
-          stage: Development      
-          environment: dev
-          bucket: dev-${{ parameters.bucket }}
-          coveragetest: ${{ parameters.coveragetest }}
+- stage: Development
+  condition: contains(variables['Build.SourceBranch'], 'refs/heads/dev')
+  jobs:
+  - template: webapp-pipeline.yaml@templates
+    parameters:
+        stage: Development      
+        environment: dev
+        bucket: dev-${{ parameters.bucket }}
+        coveragetest: ${{ parameters.coveragetest }}
+- stage: Quality
+  condition: or(contains(variables['Build.SourceBranch'], 'refs/heads/release'), contains(variables['Build.SourceBranch'], 'refs/heads/hotfix'))
+  jobs:
+  - template: webapp-pipeline.yaml@templates
+    parameters:
+        stage: Quality      
+        environment: dev
+        bucket: qa-${{ parameters.bucket }}
+        coveragetest: ${{ parameters.coveragetest }}
+- stage: Production
+  condition: or(contains(variables['Build.SourceBranch'], 'refs/heads/release'), contains(variables['Build.SourceBranch'], 'refs/heads/hotfix'))
+  jobs:
+  - template: webapp-pipeline.yaml@templates
+    parameters:
+        stage: Production      
+        environment: prod
+        bucket: prod-${{ parameters.bucket }}
+        coveragetest: ${{ parameters.coveragetest }}
 
-- ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:        
-  - stage: Quality
-    jobs:
-    - template: webapp-pipeline.yaml@templates
-      parameters:
-          stage: Quality      
-          environment: dev
-          bucket: qa-${{ parameters.bucket }}
-          coveragetest: ${{ parameters.coveragetest }}
-        
-  - stage: Production
-    jobs:
-    - template: webapp-pipeline.yaml@templates
-      parameters:
-          stage: Production      
-          environment: prod
-          bucket: prod-${{ parameters.bucket }}
-          coveragetest: ${{ parameters.coveragetest }}
-
-- ${{ if contains(variables['Build.SourceBranchName'], 'hotfix') }}:        
-  - stage: Quality
-    jobs:
-    - template: webapp-pipeline.yaml@templates
-      parameters:
-          stage: Quality      
-          environment: dev
-          bucket: qa-${{ parameters.bucket }}
-          coveragetest: ${{ parameters.coveragetest }}
-        
-  - stage: Production
-    jobs:
-    - template: webapp-pipeline.yaml@templates
-      parameters:
-          stage: Production      
-          environment: prod
-          bucket: prod-${{ parameters.bucket }}
-          coveragetest: ${{ parameters.coveragetest }}
