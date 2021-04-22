@@ -26,8 +26,13 @@ jobs:
         - script: cp $(qagcptoken.secureFilePath) .
         - script: cp $(prodgcptoken.secureFilePath) .
         - script: mv $(Build.Repository.Name)/next.config.${{ parameters.environment }}.js $(Build.Repository.Name)/next.config.js
-        - script: npm install
-          workingDirectory: ./$(Build.Repository.Name)
+        - task: Npm@1
+          inputs:
+            command: 'install'
+            workingDir: './$(Build.Repository.Name)'
+            verbose: true
+            customRegistry: 'useFeed'
+            customFeed: '2c739036-e470-404a-ac5d-de5c84198609/3258a184-ef98-47da-a38f-c332096c6d17'
         - script: npm run build
           workingDirectory: ./$(Build.Repository.Name)
         - task: ArchiveFiles@2
