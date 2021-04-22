@@ -1,0 +1,49 @@
+#teste
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    deployment: {{environment}}-{{Name}}
+    app: {{environment}}-{{Name}}
+  namespace : {{namespace}}
+  name: {{environment}}-{{Name}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: {{environment}}-{{Name}}
+      app: {{environment}}-{{Name}}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        deployment: {{environment}}-{{Name}}
+        app: {{environment}}-{{Name}}
+    spec:
+      hostname: {{environment}}-{{Name}}
+      subdomain: local  
+#      affinity:
+#        nodeAffinity:
+#          requiredDuringSchedulingIgnoredDuringExecution:
+#            nodeSelectorTerms:
+#            - matchExpressions:
+#              - key: nodepool
+#                operator: In
+#                values:
+#                - general
+      containers:
+        - name: {{Name}}
+          image: gcr.io/saudeid-prd/{{namespace}}/{{Name}}:{{environment}}-{{BuildId}}
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 80
+          envFrom:
+          # The ConfigMap we want to use
+          - configMapRef:
+              name: {{environment}}-config
