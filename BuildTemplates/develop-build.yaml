@@ -58,6 +58,11 @@ jobs:
           - task: Bash@3
             inputs:
               targetType: 'inline'
+              script: 'cp -r templates/extensions/helm/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml'
+              workingDirectory: '$(System.DefaultWorkingDirectory)'   
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
               script: 'kubectl create -n ${{ parameters.namespace }} configmap $(Environment.Name)-config --from-env-file variables.env -o yaml --dry-run=client |kubectl apply -f -' 
               workingDirectory: '$(System.DefaultWorkingDirectory)'    
         - ${{ if eq(parameters.deploymentconfig, 'true') }}:
