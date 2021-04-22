@@ -72,7 +72,7 @@ jobs:
           - script: cp -r $(Build.Repository.Name)/service*.yaml templates/helm/$(Environment.Name)/templates/service.yaml
         - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
           - ${{ if eq(parameters.autoscale, 'true') }}:
-            - script: cp -r templates/helm/options/hpa.yaml templates/helm/$(Environment.Name)/templates/
+            - script: cp -r templates/extensions/helm/hpa.yaml templates/helm/$(Environment.Name)/templates/
         - task: Bash@3
           inputs:
             targetType: 'inline'
