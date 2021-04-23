@@ -34,6 +34,7 @@ jobs:
 #            customRegistry: 'useFeed'
 #            customFeed: '2c739036-e470-404a-ac5d-de5c84198609/3258a184-ef98-47da-a38f-c332096c6d17'
         - script: npm install
+          workingDirectory: ./$(Build.Repository.Name)
         - script: npm run build
           workingDirectory: ./$(Build.Repository.Name)
         - task: ArchiveFiles@2
