@@ -33,9 +33,9 @@ jobs:
             view: '4fa63c26-f5c0-4776-b32a-1aa3547be025'
             definition: '8c27d21b-2e88-4761-aa6d-c3638eca0022'
             version: '1.1.2'
-            downloadPath: './$(Build.Repository.Name)'
-#        - script: npm install
-#          workingDirectory: ./$(Build.Repository.Name)
+            downloadPath: './$(Build.Repository.Name)/node_modules'
+        - script: npm install
+          workingDirectory: ./$(Build.Repository.Name)
         - script: npm run build
           workingDirectory: ./$(Build.Repository.Name)
         - task: ArchiveFiles@2
