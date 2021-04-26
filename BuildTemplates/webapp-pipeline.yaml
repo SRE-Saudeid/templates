@@ -26,13 +26,14 @@ jobs:
         - script: cp $(qagcptoken.secureFilePath) .
         - script: cp $(prodgcptoken.secureFilePath) .
         - script: mv $(Build.Repository.Name)/next.config.${{ parameters.environment }}.js $(Build.Repository.Name)/next.config.js
-        - task: Npm@1
+        - task: DownloadPackage@1
           inputs:
-            command: 'install'
-            workingDir: './$(Build.Repository.Name)'
-            verbose: true
-            customRegistry: 'useFeed'
-            customFeed: '2c739036-e470-404a-ac5d-de5c84198609/3258a184-ef98-47da-a38f-c332096c6d17'
+            packageType: 'npm'
+            feed: '2c739036-e470-404a-ac5d-de5c84198609/3258a184-ef98-47da-a38f-c332096c6d17'
+            view: '4fa63c26-f5c0-4776-b32a-1aa3547be025'
+            definition: '8c27d21b-2e88-4761-aa6d-c3638eca0022'
+            version: '1.1.2'
+            downloadPath: './$(Build.Repository.Name)'
 #        - script: npm install
 #          workingDirectory: ./$(Build.Repository.Name)
         - script: npm run build
