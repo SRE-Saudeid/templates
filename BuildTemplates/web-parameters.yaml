@@ -10,9 +10,15 @@ parameters:
 - name: bucket
   type: object
   default: []
+- name: variables
+  type: string
+  default: ''
 
 stages:
 - stage: Development
+  ${{ if  parameters.variables }}:
+    variables:
+    - group: dev-${{ parameters.variables }}
   condition: contains(variables['Build.SourceBranch'], 'refs/heads/dev')
   jobs:
   - template: webapp-pipeline.yaml@templates
@@ -21,7 +27,11 @@ stages:
         environment: dev
         bucket: dev-${{ parameters.bucket }}
         coveragetest: ${{ parameters.coveragetest }}
+        variables: ${{ parameters.variables }}
 - stage: Quality
+  ${{ if  parameters.variables }}:
+    variables:
+    - group: qa-${{ parameters.variables }}
   condition: or(contains(variables['Build.SourceBranch'], 'refs/heads/release'), contains(variables['Build.SourceBranch'], 'refs/heads/hotfix'))
   jobs:
   - template: webapp-pipeline.yaml@templates
@@ -30,7 +40,11 @@ stages:
         environment: dev
         bucket: qa-${{ parameters.bucket }}
         coveragetest: ${{ parameters.coveragetest }}
+        variables: ${{ parameters.variables }}
 - stage: Production
+  ${{ if  parameters.variables }}:
+    variables:
+    - group: prod-${{ parameters.variables }}
   condition: or(contains(variables['Build.SourceBranch'], 'refs/heads/release'), contains(variables['Build.SourceBranch'], 'refs/heads/hotfix'))
   jobs:
   - template: webapp-pipeline.yaml@templates
@@ -39,4 +53,5 @@ stages:
         environment: prod
         bucket: prod-${{ parameters.bucket }}
         coveragetest: ${{ parameters.coveragetest }}
+        variables: ${{ parameters.variables }}
 
