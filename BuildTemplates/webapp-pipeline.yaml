@@ -34,8 +34,8 @@ jobs:
             definition: '8c27d21b-2e88-4761-aa6d-c3638eca0022'
             version: '1.1.2'
             downloadPath: './$(Build.Repository.Name)/node_modules'
-        - script: ls
-          workingDirectory: $(Build.Repository.Name)/node_modules
+        - script: tree .
+          workingDirectory: $(Build.Repository.Name)/node_modules/package
         - script: npm install
           workingDirectory: ./$(Build.Repository.Name)
         - script: npm run build
