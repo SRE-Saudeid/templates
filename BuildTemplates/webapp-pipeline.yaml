@@ -36,6 +36,10 @@ jobs:
             downloadPath: './$(Build.Repository.Name)/node_modules/@saudeid/'
         - script: mv package design-system
           workingDirectory: ./$(Build.Repository.Name)/node_modules/@saudeid/
+        - task: Npm@1
+          inputs:
+            command: 'install'
+            verbose: true
         - script: npm install
           workingDirectory: ./$(Build.Repository.Name)
         - script: npm run build
