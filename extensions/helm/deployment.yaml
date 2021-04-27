@@ -45,4 +45,4 @@ spec:
           envFrom:
           # The ConfigMap we want to use
           - configMapRef:
-              name: {{Name}}-config
+              name: {{environment}}-{{Name}}-config
