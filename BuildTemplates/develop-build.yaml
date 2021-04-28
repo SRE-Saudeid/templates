@@ -66,7 +66,7 @@ jobs:
               kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
               namespace: '${{ parameters.namespace }}'
               forceUpdateConfigMap: true
-              configMapName: ${{ parameters.namespace }}-config
+              configMapName: ${{ parameters.app }}-config
               configMapArguments: --from-env-file=variables.env
           - script: 'kubectl create configmap ${{ parameters.namespace }} --from-env-file=variables.env -o yaml --dry-run=client |kubectl apply -f -'
         - ${{ if eq(parameters.deploymentconfig, 'true') }}:
