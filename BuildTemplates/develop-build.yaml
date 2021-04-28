@@ -60,15 +60,8 @@ jobs:
               targetType: 'inline'
               script: 'cp -r templates/extensions/helm/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml'
               workingDirectory: '$(System.DefaultWorkingDirectory)'   
-          - task: Kubernetes@1
-            displayName: 'Create ConfigMap for /data'
-            inputs:
-              connectionType: 'Kubernetes Service Connection'
-              kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
-              command: 'create'
-              arguments: 'configmap ${{ parameters.namespace }} --from-env-file=variables.env -o yaml --dry-run=client |kubectl apply -f -'
-              secretType: 'dockerRegistry'
-              containerRegistryType: 'Azure Container Registry'
+
+          - script: 'kubectl create configmap ${{ parameters.namespace }} --from-env-file=variables.env -o yaml --dry-run=client |kubectl apply -f -'
         - ${{ if eq(parameters.deploymentconfig, 'true') }}:
           - script: cp -r $(Build.Repository.Name)/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml
         - ${{ if eq(parameters.virtualservice, 'true') }}:
