@@ -60,7 +60,7 @@ jobs:
               targetType: 'inline'
               script: 'cp -r templates/extensions/helm/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml'
               workingDirectory: '$(System.DefaultWorkingDirectory)'   
-          - script: 'kubectl create configmap ${{ parameters.app }} --from-env-file=variables.env -o yaml --dry-run=client |kubectl apply -f -'
+          - script: 'kubectl create configmap ${{ parameters.app }}-config --from-env-file=variables.env -o yaml --dry-run=client |kubectl apply -f -'
         - ${{ if eq(parameters.deploymentconfig, 'true') }}:
           - script: cp -r $(Build.Repository.Name)/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml
         - ${{ if eq(parameters.virtualservice, 'true') }}:
