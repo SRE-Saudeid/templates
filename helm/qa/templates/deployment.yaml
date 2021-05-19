@@ -43,7 +43,3 @@ spec:
           imagePullPolicy: Always
           ports:
           - containerPort: 80
-          envFrom:
-          # The ConfigMap we want to use
-          - configMapRef:
-              name: {{environment}}-config
