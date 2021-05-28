@@ -8,48 +8,37 @@ resources:
       name: Area-Engenharia/templates
       ref: refs/heads/release
 
-
 stages:
 - stage: Development
+  condition: contains(variables['Build.SourceBranch'], 'refs/heads/dev')
   jobs:
-  - template: BuildTemplates/develop-build.yaml@templates
+  - template: BuildTemplates/cronjob.yaml@templates
     parameters:
         namespace: 'bizdev'
-        release: 'dev-tyto-datalake-consumer'
+        release: 'dev-job-trackco-get-nps'
         stage: 'Development'
         environment: 'dev'
-        app: 'tyto-datalake-consumer'
-        cronjob: 
-# - stage: Homologation
-#   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
-#   jobs:
-#   - template: BuildTemplates/develop-build.yaml@templates
-#     parameters:
-#         namespace: 'teste'
-#         release: 'hml-tyto-datalake-consumer'
-#         stage: 'Homologation'
-#         environment: 'hml'
-#         app: 'tyto-datalake-consumer'
-#         cronjob: 
+        app: 'job-trackco-get-nps'
+        cronjob: \"5 * * * *"
 - stage: Quality
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
+  condition: or(contains(variables['Build.SourceBranch'], 'refs/heads/release'), contains(variables['Build.SourceBranch'], 'refs/heads/hotfix'))
   jobs:
-  - template: BuildTemplates/qa-pipeline.yaml@templates
+  - template: BuildTemplates/cronjob.yaml@templates
     parameters:
         namespace: 'bizdev'
-        release: 'qa-tyto-datalake-consumer'
+        release: 'qa-job-trackco-get-nps'
         stage: 'Quality'
         environment: 'qa'
-        app: 'tyto-datalake-consumer'
-        cronjob: 
+        app: 'job-trackco-get-nps'
+        cronjob: \"0 1 * * *"
 - stage: Production
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/release'))
+  condition: or(contains(variables['Build.SourceBranch'], 'refs/heads/release'), contains(variables['Build.SourceBranch'], 'refs/heads/hotfix'))
   jobs:
-  - template: BuildTemplates/develop-build.yaml@templates
+  - template: BuildTemplates/cronjob.yaml@templates
     parameters:
         namespace: 'bizdev'
-        release: 'prod-tyto-datalake-consumer'
+        release: 'prod-job-trackco-get-nps'
         stage: 'Production'
         environment: 'prod'
-        app: 'tyto-datalake-consumer'
-        cronjob: 
+        app: 'job-trackco-get-nps'
+        cronjob: \"0 1 * * *"
