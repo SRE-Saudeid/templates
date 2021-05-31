@@ -24,14 +24,14 @@ jobs:
         - task: Docker@2
           inputs:
             containerRegistry: 'SaudeID-PRD Container Registry'
-            repository: 'saudeid-prd/${{ parameters.namespace }}/$(Build.Repository.Name)'
+            repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
             command: 'build'
             Dockerfile: '**/Dockerfile'
             tags: '$(Environment.Name)-$(Build.BuildId)'
         - task: Docker@2
           inputs:
             containerRegistry: 'SaudeID-PRD Container Registry'
-            repository: 'saudeid-prd/${{ parameters.namespace }}/$(Build.Repository.Name)'
+            repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
             command: 'push'
             tags: '$(Environment.Name)-$(Build.BuildId)'
         - task: Kubernetes@1
