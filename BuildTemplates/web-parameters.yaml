@@ -37,7 +37,7 @@ stages:
   - template: webapp-pipeline.yaml@templates
     parameters:
         stage: Quality      
-        environment: dev
+        environment: qa
         bucket: qa-${{ parameters.bucket }}
         coveragetest: ${{ parameters.coveragetest }}
         variables: ${{ parameters.variables }}
