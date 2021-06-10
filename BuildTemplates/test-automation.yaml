@@ -1,0 +1,68 @@
+parameters:
+- name: environment
+  type: object
+  default: []
+- name: stage
+  default: []
+- name: webapp
+  default: []
+- name: variables
+  type: string
+  default: ''
+
+jobs:
+- deployment: ${{ parameters.stage }}
+  displayName: ${{ parameters.stage }}
+  pool:
+    vmImage: 'ubuntu-latest'
+  environment: ${{ parameters.environment }}
+  strategy:
+    runOnce:
+      preDeploy:
+        steps:
+        - checkout: self
+          clean: true
+        - checkout: templates
+          clean: true
+        - task: UseRubyVersion@0
+            inputs:
+            versionSpec: '>= 2.7.1'
+            addToPath: true
+            displayName: 'Installing Ruby'
+        - script: |
+            which ruby
+        - ${{ if eq(parameters.webapp, 'true') }}:
+            - script: |
+                sudo apt-get -y install google-chrome-stable xvfb unzip libxi6 libgconf-2-4
+                sudo apt autoremove
+                sudo apt autoclean
+                sudo apt clean
+                cd /tmp
+                wget "https://chromedriver.storage.googleapis.com/90.0.4430.24/chromedriver_linux64.zip"
+                unzip chromedriver_linux64.zip
+                sudo mv chromedriver /usr/bin/chromedriver
+                sudo chown root:root /usr/bin/chromedriver
+                sudo chmod +x /usr/bin/chromedriver
+                displayName: "Installing chromedriver"
+        - script: |
+            gem install bundler
+            bundle install --retry=3 --jobs=4
+            displayName: 'Installing Bundler and Gems' 
+        - script: |
+            cucumber -p ci --retry 2 
+            displayName: 'Running tests'
+        - task: PublishPipelineArtifact@0
+            inputs:
+            targetPath: "report"
+            artifactName: "Report"
+            condition: succeededOrFailed()
+            displayName: "Publish Report"
+        - task: PublishTestResults@2
+            inputs:
+            testRunner: JUnit
+            testResultsFiles: 'report/junit/TEST*.xml'
+            mergeTestResults: true
+            testRunTitle: "Test Results"
+            publishRunAttachments: true
+            condition: succeededOrFailed()
+            continueOnError: true
