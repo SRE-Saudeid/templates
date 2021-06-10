@@ -1,0 +1,54 @@
+parameters:
+- name: environment
+  type: object
+  default: []
+- name: stage
+  default: []
+- name: webapp
+  type: boolean
+  default: false
+- name: variables
+  type: string
+  default: ''
+
+
+stages:
+- stage: Development
+  ${{ if  parameters.variables }}:
+    variables:
+    - group: dev-${{ parameters.variables }}
+  condition: contains(variables['Build.SourceBranch'], 'refs/heads/dev')
+  jobs:
+  - template: test-automation.yaml@templates
+    parameters:
+        environment: dev
+        stage: Development
+        webapp: ${{ parameters.webapp }}
+        variables: ${{ parameters.variables }}
+
+#- ${{ if contains(variables['Build.SourceBranchName'], 'release*') }}:        
+- stage: Quality
+  ${{ if  parameters.variables }}:
+    variables:
+    - group: qa-${{ parameters.variables }}
+  condition: or(contains(variables['Build.SourceBranch'], 'refs/heads/release'), contains(variables['Build.SourceBranch'], 'refs/heads/hotfix'))
+  jobs:
+  - template: test-automation.yaml@templates
+    parameters:
+        environment: qa
+        stage: Quality
+        webapp: ${{ parameters.webapp }}
+        variables: ${{ parameters.variables }}
+
+- stage: Production
+  ${{ if  parameters.variables }}:
+    variables:
+    - group: prod-${{ parameters.variables }}
+  condition: or(succeeded(), contains(variables['Build.SourceBranch'], 'refs/heads/release'), contains(variables['Build.SourceBranch'], 'refs/heads/hotfix'))
+  jobs:
+  - template: test-automation.yaml@templates
+    parameters:
+        environment: prod
+        stage: Production
+        webapp: ${{ parameters.webapp }}
+        variables: ${{ parameters.variables }}
