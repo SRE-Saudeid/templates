@@ -29,7 +29,6 @@ jobs:
             versionSpec: '>= 2.7.1'
             addToPath: true
           displayName: 'Installing Ruby'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
         - script: |
             which ruby
         - ${{ if eq(parameters.webapp, 'true') }}:
