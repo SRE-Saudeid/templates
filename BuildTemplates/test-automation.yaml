@@ -43,7 +43,7 @@ jobs:
                 sudo mv chromedriver /usr/bin/chromedriver
                 sudo chown root:root /usr/bin/chromedriver
                 sudo chmod +x /usr/bin/chromedriver
-                displayName: "Installing chromedriver"
+              displayName: "Installing chromedriver"
         - script: |
             gem install bundler
             bundle install --retry=3 --jobs=4
