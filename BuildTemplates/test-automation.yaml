@@ -28,7 +28,7 @@ jobs:
           inputs:
             versionSpec: '>= 2.7.1'
             addToPath: true
-            displayName: 'Installing Ruby'
+          displayName: 'Installing Ruby'
         - script: |
             which ruby
         - ${{ if eq(parameters.webapp, 'true') }}:
@@ -47,16 +47,16 @@ jobs:
         - script: |
             gem install bundler
             bundle install --retry=3 --jobs=4
-            displayName: 'Installing Bundler and Gems' 
+          displayName: 'Installing Bundler and Gems' 
         - script: |
             cucumber -p ci --retry 2 
-            displayName: 'Running tests'
+          displayName: 'Running tests'
         - task: PublishPipelineArtifact@0
           inputs:
             targetPath: "report"
             artifactName: "Report"
             condition: succeededOrFailed()
-            displayName: "Publish Report"
+          displayName: "Publish Report"
         - task: PublishTestResults@2
           inputs:
             testRunner: JUnit
