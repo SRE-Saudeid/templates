@@ -29,6 +29,7 @@ jobs:
             versionSpec: '>= 2.7.1'
             addToPath: true
           displayName: 'Installing Ruby'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
         - script: |
             which ruby
         - ${{ if eq(parameters.webapp, 'true') }}:
@@ -44,13 +45,16 @@ jobs:
                 sudo chown root:root /usr/bin/chromedriver
                 sudo chmod +x /usr/bin/chromedriver
               displayName: "Installing chromedriver"
+              workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
         - script: |
             gem install bundler
             bundle install --retry=3 --jobs=4
           displayName: 'Installing Bundler and Gems' 
+          workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
         - script: |
             cucumber -p ci --retry 2 
           displayName: 'Running tests'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
         - task: PublishPipelineArtifact@0
           inputs:
             targetPath: "report"
