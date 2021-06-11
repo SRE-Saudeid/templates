@@ -47,7 +47,7 @@ jobs:
               displayName: "Installing chromedriver"
               workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
         - script: |
-            gem install bundler
+            gem install bundler -v 2.2.19
             bundle install --retry=3 --jobs=4
           displayName: 'Installing Bundler and Gems' 
           workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
