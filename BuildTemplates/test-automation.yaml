@@ -51,7 +51,7 @@ jobs:
           displayName: 'Installing Bundler and Gems' 
           workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
         - script: |
-            cucumber -p ci --retry 2 
+            cucumber -p ci -t 'not @not_run' --retry 2 
           displayName: 'Running tests'
           workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'         
         - task: PublishPipelineArtifact@0
