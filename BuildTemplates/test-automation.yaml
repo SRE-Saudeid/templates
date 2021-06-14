@@ -54,6 +54,8 @@ jobs:
             cucumber -p ci --retry 2 
           displayName: 'Running tests'
           workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
+        - script: ls
+          workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'          
         - task: PublishPipelineArtifact@0
           inputs:
             targetPath: "report"
