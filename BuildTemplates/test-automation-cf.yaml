@@ -9,8 +9,9 @@ parameters:
 
 stages:
 - stage: Development
-  variables:
-  - group: dev-${{ parameters.variables }}
+  ${{ if  parameters.variables }}:
+    variables:
+    - group: dev-${{ parameters.variables }}
   condition: contains(variables['Build.SourceBranch'], 'refs/heads/dev')
   jobs:
   - template: test-automation.yaml@templates
@@ -22,8 +23,9 @@ stages:
 
 #- ${{ if contains(variables['Build.SourceBranchName'], 'release*') }}:        
 - stage: Quality
-  variables:
-  - group: qa-${{ parameters.variables }}
+  ${{ if  parameters.variables }}:
+    variables:
+    - group: dev-${{ parameters.variables }}
   condition: or(contains(variables['Build.SourceBranch'], 'refs/heads/release'), contains(variables['Build.SourceBranch'], 'refs/heads/hotfix'))
   jobs:
   - template: test-automation.yaml@templates
@@ -34,8 +36,9 @@ stages:
         variables: ${{ parameters.variables }}
 
 - stage: Production
-  variables:
-  - group: prod-${{ parameters.variables }}
+  ${{ if  parameters.variables }}:
+    variables:
+    - group: dev-${{ parameters.variables }}
   condition: or(succeeded(), contains(variables['Build.SourceBranch'], 'refs/heads/release'), contains(variables['Build.SourceBranch'], 'refs/heads/hotfix'))
   jobs:
   - template: test-automation.yaml@templates
