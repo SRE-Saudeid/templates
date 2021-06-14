@@ -58,7 +58,7 @@ jobs:
           inputs:
             targetPath: "report"
             artifactName: "Report"
-            condition: succeededOrFailed()
+          condition: succeededOrFailed()
           displayName: "Publish Report"
         - task: PublishTestResults@2
           inputs:
@@ -68,4 +68,4 @@ jobs:
             testRunTitle: "Test Results"
             publishRunAttachments: true
             condition: succeededOrFailed()
-            continueOnError: true
+          continueOnError: true
