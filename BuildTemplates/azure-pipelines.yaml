@@ -18,6 +18,9 @@ parameters:
 - name: autoscale
   type: boolean
   default: false
+- name: nextjs
+  type: boolean
+  default: false
 - name: variables
   type: string
   default: ''
@@ -37,6 +40,7 @@ stages:
         release: dev-${{ parameters.app }}
         app: ${{ parameters.app }}
         stage: Development
+        nextjs: ${{ parameters.nextjs }}
         deploymentconfig: ${{ parameters.deploymentconfig }}
         virtualservice: ${{ parameters.virtualservice }}
         coveragetest: ${{ parameters.coveragetest }}
@@ -57,6 +61,7 @@ stages:
         release: qa-${{ parameters.app }}
         app: ${{ parameters.app }}
         stage: Quality
+        nextjs: ${{ parameters.nextjs }}
         deploymentconfig: ${{ parameters.deploymentconfig }}
         virtualservice: ${{ parameters.virtualservice }}
         coveragetest: ${{ parameters.coveragetest }}
@@ -76,6 +81,7 @@ stages:
         release: prod-${{ parameters.app }}
         app: ${{ parameters.app }}
         stage: Production
+        nextjs: ${{ parameters.nextjs }}
         deploymentconfig: ${{ parameters.deploymentconfig }}
         virtualservice: ${{ parameters.virtualservice }}
         coveragetest: ${{ parameters.coveragetest }}
