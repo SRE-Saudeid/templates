@@ -33,15 +33,6 @@ jobs:
             workingDir: $(Build.Repository.Name)
         - script: npm run build
           workingDirectory: ./$(Build.Repository.Name)
-        - task: Docker@2
-          inputs:
-            containerRegistry: 'SaudeID-PRD Container Registry'
-            repository: 'saudeid-prd/webapp/webapp'
-            command: 'buildAndPush'
-            Dockerfile: '**/Dockerfile'
-            tags: |
-              $(Environment.Name)-$(Build.BuildId)
-              latest
         - task: ArchiveFiles@2
           inputs:
             rootFolderOrFile: './$(Build.Repository.Name)/out'
