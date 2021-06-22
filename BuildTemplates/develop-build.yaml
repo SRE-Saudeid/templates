@@ -1,179 +1,190 @@
 parameters:
-- name: environment
-  type: object
-  default: []
-- name: namespace
-  default: []
-- name: release
-  default: []
-- name: app
-  default: []
-- name: stage
-  default: []
-- name: coveragetest
-  default: []
-- name: deploymentconfig
-  default: []
-- name: virtualservice
-  default: []
-- name: autoscale
-  default: []
-- name: variables
-  type: string
-  default: ''
-
-
-jobs:
-  # kubernetes: 'GCP - dev-Kubernetes'
-- deployment: ${{ parameters.stage }}
-  displayName: ${{ parameters.stage }}
-  pool:
-    vmImage: 'ubuntu-latest'
-  environment: ${{ parameters.environment }}
-  strategy:
-    runOnce:
-      preDeploy:
-        steps:
-        - checkout: self
-          clean: true
-        - checkout: templates
-          clean: true
-        - task: Kubernetes@1
-          inputs:
-            connectionType: 'Kubernetes Service Connection'
-            kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
-            namespace: '${{ parameters.namespace }}'
-            command: 'login'
-        - task: HelmInstaller@0
-          inputs:
-            helmVersion: '3.4.2'
-            checkLatestHelmVersion: false
-            installKubectl: true
-        - ${{ if parameters.variables }}:
-          - task: Bash@3
-            inputs:
-              targetType: 'inline'
-              script: 'env |sort >> variables.env' 
-              workingDirectory: '$(System.DefaultWorkingDirectory)'  
-          - task: Bash@3
-            inputs:
-              targetType: 'inline'
-              script: 'cp -r templates/extensions/helm/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml'
-              workingDirectory: '$(System.DefaultWorkingDirectory)'   
+  - name: environment
+    type: object
+    default: []
+  - name: namespace
+    default: []
+  - name: release
+    default: []
+  - name: app
+    default: []
+  - name: stage
+    default: []
+  - name: coveragetest
+    default: []
+  - name: deploymentconfig
+    default: []
+  - name: virtualservice
+    default: []
+  - name: autoscale
+    default: []
+  - name: nextjs
+    default: []
+  - name: variables
+    type: string
+    default: ''
+  
+  
+  jobs:
+    # kubernetes: 'GCP - dev-Kubernetes'
+  - deployment: ${{ parameters.stage }}
+    displayName: ${{ parameters.stage }}
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: ${{ parameters.environment }}
+    strategy:
+      runOnce:
+        preDeploy:
+          steps:
+          - checkout: self
+            clean: true
+          - checkout: templates
+            clean: true
           - task: Kubernetes@1
-            displayName: 'Create ConfigMap for /data'
             inputs:
+              connectionType: 'Kubernetes Service Connection'
               kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
               namespace: '${{ parameters.namespace }}'
-              forceUpdateConfigMap: true
-              configMapName: ${{ parameters.app }}-config
-              configMapArguments: --from-env-file=variables.env
-        - ${{ if eq(parameters.deploymentconfig, 'true') }}:
-          - script: cp -r $(Build.Repository.Name)/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml
-        - ${{ if eq(parameters.virtualservice, 'true') }}:
-          - script: cp -r $(Build.Repository.Name)/virtualservice*.yaml templates/helm/$(Environment.Name)/templates/virtualservice.yaml
-          - script: cp -r $(Build.Repository.Name)/service*.yaml templates/helm/$(Environment.Name)/templates/service.yaml
-        - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
-          - ${{ if eq(parameters.autoscale, 'true') }}:
-            - script: cp -r templates/extensions/helm/hpa.yaml templates/helm/$(Environment.Name)/templates/
-        - task: Bash@3
-          inputs:
-            targetType: 'inline'
-            script: 'sed -i ''s/{{namespace}}/${{ parameters.namespace }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/*.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' $(Build.Repository.Name)/Dockerfile*' 
-            workingDirectory: '$(System.DefaultWorkingDirectory)'
-        - ${{ if eq(parameters.coveragetest, 'true') }}:
-          - bash: npm install
-            displayName: Install
-            continueOnError: false
-            workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
-          - bash: npm run lint
-            displayName: Lint
-            workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
-            continueOnError: true
-          - bash: |
-              npm test \
-              --  \
-              --ci  \
-              --coverage  \
-              --reporters=default  \
-              --reporters=jest-junit  \
-              --coverageReporters=text  \
-              --coverageReporters=text-summary  \
-              --coverageReporters=lcov  \
-              --coverageReporters=cobertura
-            displayName: Unit Test
-            continueOnError: false
-            workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
-          - task: PublishTestResults@2
+              command: 'login'
+          - task: HelmInstaller@0
             inputs:
-              testResultsFormat: 'JUnit'
-              testResultsFiles: 'junit.xml'
-              searchFolder: '$(Build.SourcesDirectory)'
-              testRunTitle: '($(Build.SourceBranchName)): Unit Tests [$(Build.SourceVersion)]'
-          - task: PublishCodeCoverageResults@1
+              helmVersion: '3.4.2'
+              checkLatestHelmVersion: false
+              installKubectl: true
+          - ${{ if parameters.variables }}:
+            - task: Bash@3
+              inputs:
+                targetType: 'inline'
+                script: 'env |sort >> variables.env' 
+                workingDirectory: '$(System.DefaultWorkingDirectory)'  
+            - task: Bash@3
+              inputs:
+                targetType: 'inline'
+                script: 'cp -r templates/extensions/helm/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml'
+                workingDirectory: '$(System.DefaultWorkingDirectory)'   
+            - task: Kubernetes@1
+              displayName: 'Create ConfigMap for /data'
+              inputs:
+                kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
+                namespace: '${{ parameters.namespace }}'
+                forceUpdateConfigMap: true
+                configMapName: ${{ parameters.app }}-config
+                configMapArguments: --from-env-file=variables.env
+          - ${{ if eq(parameters.deploymentconfig, 'true') }}:
+            - script: cp -r $(Build.Repository.Name)/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml
+          - ${{ if eq(parameters.virtualservice, 'true') }}:
+            - script: cp -r $(Build.Repository.Name)/virtualservice*.yaml templates/helm/$(Environment.Name)/templates/virtualservice.yaml
+            - script: cp -r $(Build.Repository.Name)/service*.yaml templates/helm/$(Environment.Name)/templates/service.yaml
+          - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+            - ${{ if eq(parameters.autoscale, 'true') }}:
+              - script: cp -r templates/extensions/helm/hpa.yaml templates/helm/$(Environment.Name)/templates/
+          - task: Bash@3
             inputs:
-              codeCoverageTool: 'Cobertura'
-              summaryFileLocation: '$(Build.SourcesDirectory)/coverage/cobertura-coverage.xml'
-          - bash: npm run build
-            displayName: Build
-            continueOnError: false
-          - task: CopyFiles@2
+              targetType: 'inline'
+              script: 'sed -i ''s/{{namespace}}/${{ parameters.namespace }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/*.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' $(Build.Repository.Name)/Dockerfile*' 
+              workingDirectory: '$(System.DefaultWorkingDirectory)'
+          - ${{ if eq(parameters.nextjs, 'true') }}:
+            - task: Npm@1
+              inputs:
+                command: 'install'
+                verbose: true
+                workingDir: $(Build.Repository.Name)
+            - script: npm run build
+              workingDirectory: ./$(Build.Repository.Name)
+          - ${{ if eq(parameters.coveragetest, 'true') }}:
+            - bash: npm install
+              displayName: Install
+              continueOnError: false
+              workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
+            - bash: npm run lint
+              displayName: Lint
+              workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
+              continueOnError: true
+            - bash: |
+                npm test \
+                --  \
+                --ci  \
+                --coverage  \
+                --reporters=default  \
+                --reporters=jest-junit  \
+                --coverageReporters=text  \
+                --coverageReporters=text-summary  \
+                --coverageReporters=lcov  \
+                --coverageReporters=cobertura
+              displayName: Unit Test
+              continueOnError: false
+              workingDirectory: '$(System.DefaultWorkingDirectory)/$(Build.Repository.Name)'
+            - task: PublishTestResults@2
+              inputs:
+                testResultsFormat: 'JUnit'
+                testResultsFiles: 'junit.xml'
+                searchFolder: '$(Build.SourcesDirectory)'
+                testRunTitle: '($(Build.SourceBranchName)): Unit Tests [$(Build.SourceVersion)]'
+            - task: PublishCodeCoverageResults@1
+              inputs:
+                codeCoverageTool: 'Cobertura'
+                summaryFileLocation: '$(Build.SourcesDirectory)/coverage/cobertura-coverage.xml'
+            - bash: npm run build
+              displayName: Build
+              continueOnError: false
+            - task: CopyFiles@2
+              inputs:
+                SourceFolder: $(Build.SourcesDirectory)
+                Contents: |
+                  **
+                  !coverage/**
+                  !.git/**
+                  !.vscode/**
+                  !node_modules/**
+                TargetFolder: $(Build.BinariesDirectory)
+                CleanTargetFolder: true
+          - task: HelmDeploy@0
             inputs:
-              SourceFolder: $(Build.SourcesDirectory)
-              Contents: |
-                **
-                !coverage/**
-                !.git/**
-                !.vscode/**
-                !node_modules/**
-              TargetFolder: $(Build.BinariesDirectory)
-              CleanTargetFolder: true
-        - task: HelmDeploy@0
-          inputs:
-            command: 'package'
-            chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
-        - ${{ if eq(parameters.deploymentconfig, 'false') }}:
-          - task: Docker@2
+              command: 'package'
+              chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
+          - ${{ if eq(parameters.deploymentconfig, 'false') }}:
+            - task: Docker@2
+              inputs:
+                containerRegistry: 'SaudeID-PRD Container Registry'
+                repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
+                command: 'buildAndPush'
+                Dockerfile: '**/Dockerfile'
+                tags: |
+                  $(Environment.Name)-$(Build.BuildId)
+                  latest
+          - ${{ if eq(parameters.deploymentconfig, 'true') }}:
+            - task: Docker@2
+              inputs:
+                containerRegistry: 'SaudeID-PRD Container Registry'
+                repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
+                command: 'buildAndPush'
+                Dockerfile: '**/DockerfileDeployment'
+                tags: |
+                  $(Environment.Name)-$(Build.BuildId)
+                  latest
+          - task: PublishBuildArtifacts@1
             inputs:
-              containerRegistry: 'SaudeID-PRD Container Registry'
-              repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
-              command: 'buildAndPush'
-              Dockerfile: '**/Dockerfile'
-              tags: |
-                $(Environment.Name)-$(Build.BuildId)
-                latest
-        - ${{ if eq(parameters.deploymentconfig, 'true') }}:
-          - task: Docker@2
+              PathtoPublish: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
+              ArtifactName: 'helm'
+              publishLocation: 'Container'
+        deploy:
+          steps:
+          - task: DownloadBuildArtifacts@0
             inputs:
-              containerRegistry: 'SaudeID-PRD Container Registry'
-              repository: 'saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}'
-              command: 'buildAndPush'
-              Dockerfile: '**/DockerfileDeployment'
-              tags: |
-                $(Environment.Name)-$(Build.BuildId)
-                latest
-        - task: PublishBuildArtifacts@1
-          inputs:
-            PathtoPublish: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
-            ArtifactName: 'helm'
-            publishLocation: 'Container'
-      deploy:
-        steps:
-        - task: DownloadBuildArtifacts@0
-          inputs:
-            buildType: 'current'
-            downloadType: 'single'
-            artifactName: 'helm'
-            downloadPath: '$(System.DefaultWorkingDirectory)'
-        - task: HelmDeploy@0
-          inputs:
-            connectionType: 'Kubernetes Service Connection'
-            kubernetesServiceConnection: 'GCP - ${{ parameters.environment }}-Kubernetes'
-            namespace: '${{ parameters.namespace }}'
-            command: 'upgrade'
-            chartType: 'FilePath'
-            chartPath: '$(System.DefaultWorkingDirectory)/helm'
-            releaseName: '${{ parameters.release }}'
-            install: true
-            waitForExecution: false
-            force: false
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'helm'
+              downloadPath: '$(System.DefaultWorkingDirectory)'
+          - task: HelmDeploy@0
+            inputs:
+              connectionType: 'Kubernetes Service Connection'
+              kubernetesServiceConnection: 'GCP - ${{ parameters.environment }}-Kubernetes'
+              namespace: '${{ parameters.namespace }}'
+              command: 'upgrade'
+              chartType: 'FilePath'
+              chartPath: '$(System.DefaultWorkingDirectory)/helm'
+              releaseName: '${{ parameters.release }}'
+              install: true
+              waitForExecution: false
+              force: false
+  
