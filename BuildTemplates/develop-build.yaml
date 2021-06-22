@@ -91,6 +91,12 @@ jobs:
               workingDir: $(Build.Repository.Name)
           - script: npm run build
             workingDirectory: ./$(Build.Repository.Name)
+          - task: ArchiveFiles@2
+            inputs:
+              rootFolderOrFile: './$(Build.Repository.Name)/out'
+              includeRootFolder: true
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
         - ${{ if eq(parameters.coveragetest, 'true') }}:
           - bash: npm install
             displayName: Install
