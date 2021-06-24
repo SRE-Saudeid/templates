@@ -164,11 +164,11 @@ jobs:
               tags: |
                 $(Environment.Name)-$(Build.BuildId)
                 latest
-        - task: PublishBuildArtifacts@1
-          inputs:
-            PathtoPublish: './$(Build.Repository.Name)'
-            ArtifactName: 'out'
-            publishLocation: 'Container'
+#        - task: PublishBuildArtifacts@1
+#          inputs:
+#            PathtoPublish: './$(Build.Repository.Name)'
+#            ArtifactName: 'out'
+#            publishLocation: 'Container'
         - task: PublishBuildArtifacts@1
           inputs:
             PathtoPublish: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
