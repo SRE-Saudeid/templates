@@ -40,6 +40,7 @@ jobs:
           clean: true
         - checkout: templates
           clean: true
+          - script: env
         - task: Kubernetes@1
           inputs:
             connectionType: 'Kubernetes Service Connection'
