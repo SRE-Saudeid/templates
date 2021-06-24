@@ -91,6 +91,8 @@ jobs:
               workingDir: $(Build.Repository.Name)
           - script: npm run build
             workingDirectory: ./$(Build.Repository.Name)
+          - script: ls
+            workingDirectory: ./$(Build.Repository.Name)
         - ${{ if eq(parameters.coveragetest, 'true') }}:
           - bash: npm install
             displayName: Install
