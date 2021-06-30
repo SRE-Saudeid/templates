@@ -56,7 +56,17 @@ jobs:
             inputs:
               targetType: 'inline'
               script: 'env |sort >> variables.env' 
-              workingDirectory: '$(System.DefaultWorkingDirectory)'  
+              workingDirectory: '$(System.DefaultWorkingDirectory)'
+          - script: sed -r 's/ç/c/g;s/é/e/g;s/ã/a/g;s/\s+//g' variables.env >> env.env
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+          - script: sed -i 's/PersistSecurityInfo/Persist Security Info/g' env.env
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+          - script: sed -i 's/DataSource/Data Source/g' env.env
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+          - script: sed -i 's/InitialCatalog/Initial Catalog/g' env.env
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+          - script: sed -i 's/UserID/User ID/g' env.env
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
           - task: Bash@3
             inputs:
               targetType: 'inline'
@@ -69,7 +79,7 @@ jobs:
               namespace: '${{ parameters.namespace }}'
               forceUpdateConfigMap: true
               configMapName: ${{ parameters.app }}-config
-              configMapArguments: --from-env-file=variables.env
+              configMapArguments: --from-env-file=env.env
         - ${{ if eq(parameters.deploymentconfig, 'true') }}:
           - script: cp -r $(Build.Repository.Name)/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml
         - ${{ if eq(parameters.virtualservice, 'true') }}:
