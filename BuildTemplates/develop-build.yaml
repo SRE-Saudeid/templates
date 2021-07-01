@@ -67,6 +67,8 @@ jobs:
             workingDirectory: '$(System.DefaultWorkingDirectory)'
           - script: sed -i 's/UserID/User ID/g' env.env
             workingDirectory: '$(System.DefaultWorkingDirectory)'
+          - script: sed '/Relatedworkitems/d' -i env.env
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
           - task: Bash@3
             inputs:
               targetType: 'inline'
