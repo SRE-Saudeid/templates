@@ -80,6 +80,7 @@ jobs:
               forceUpdateConfigMap: true
               configMapName: ${{ parameters.app }}-config
               configMapArguments: --from-env-file=env.env
+          - script: cat env.env
         - ${{ if eq(parameters.deploymentconfig, 'true') }}:
           - script: cp -r $(Build.Repository.Name)/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml
         - ${{ if eq(parameters.virtualservice, 'true') }}:
