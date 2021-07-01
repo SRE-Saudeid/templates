@@ -66,6 +66,8 @@ jobs:
               targetType: 'inline'
               script: 'cp -r templates/extensions/helm/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml'
               workingDirectory: '$(System.DefaultWorkingDirectory)'   
+          - script: mv $(Build.Repository.Name)/next.config.${{ parameters.environment }}.js $(Build.Repository.Name)/next.config.js
+            continueOnError: true
           - task: Kubernetes@1
             displayName: 'Create ConfigMap for /data'
             inputs:
