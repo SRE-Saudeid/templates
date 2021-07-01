@@ -59,7 +59,6 @@ jobs:
               workingDirectory: '$(System.DefaultWorkingDirectory)'
           - script: sed -r 's/ç/c/g;s/é/e/g;s/ã/a/g;s/\s+//g;s/#/-/g' variables.env >> env.env
             workingDirectory: '$(System.DefaultWorkingDirectory)'
-          - script: cat env.env
           - script: sed '/Relatedworkitems/d' -i env.env
             workingDirectory: '$(System.DefaultWorkingDirectory)'
           - task: Bash@3
