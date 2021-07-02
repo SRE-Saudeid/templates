@@ -26,6 +26,7 @@ jobs:
         - script: cp $(qagcptoken.secureFilePath) .
         - script: cp $(prodgcptoken.secureFilePath) .
         - script: mv $(Build.Repository.Name)/next.config.${{ parameters.environment }}.js $(Build.Repository.Name)/next.config.js
+          continueOnError: true
         - task: Npm@1
           inputs:
             command: 'install'
