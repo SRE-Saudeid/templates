@@ -1,0 +1,11 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  finalizers:
+  - networking.gke.io/ingress-finalizer-V2
+  name: ingress-{{Name}}
+  namespace: {{namespace}}
+spec:
+  backend:
+    serviceName: {{environment}}-{{Name}}
+    servicePort: 443
