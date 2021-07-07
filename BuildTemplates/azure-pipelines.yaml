@@ -65,6 +65,7 @@ stages:
         app: ${{ parameters.app }}
         stage: Quality
         nextjs: ${{ parameters.nextjs }}
+        migration: ${{ parameters.migration }}
         deploymentconfig: ${{ parameters.deploymentconfig }}
         virtualservice: ${{ parameters.virtualservice }}
         coveragetest: ${{ parameters.coveragetest }}
@@ -85,6 +86,7 @@ stages:
         app: ${{ parameters.app }}
         stage: Production
         nextjs: ${{ parameters.nextjs }}
+        migration: ${{ parameters.migration }}
         deploymentconfig: ${{ parameters.deploymentconfig }}
         virtualservice: ${{ parameters.virtualservice }}
         coveragetest: ${{ parameters.coveragetest }}
