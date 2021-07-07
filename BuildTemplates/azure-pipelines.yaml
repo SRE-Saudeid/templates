@@ -24,7 +24,9 @@ parameters:
 - name: variables
   type: string
   default: ''
-
+- name: migration
+  type: boolean
+  default: false
 
 stages:
 - stage: Development
@@ -41,6 +43,7 @@ stages:
         app: ${{ parameters.app }}
         stage: Development
         nextjs: ${{ parameters.nextjs }}
+        migration: ${{ parameters.migration }}
         deploymentconfig: ${{ parameters.deploymentconfig }}
         virtualservice: ${{ parameters.virtualservice }}
         coveragetest: ${{ parameters.coveragetest }}
