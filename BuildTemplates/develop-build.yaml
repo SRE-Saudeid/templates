@@ -102,15 +102,7 @@ jobs:
           - script: npm run build
             workingDirectory: ./$(Build.Repository.Name)
         - ${{ if eq(parameters.migration, 'true') }}:
-          - task: Npm@1
-            inputs:
-              command: 'install'
-              verbose: true
-              workingDir: $(Build.Repository.Name)
-          - script: npm run build
-            workingDirectory: ./$(Build.Repository.Name)
-          - script: npm run migration:run
-            workingDirectory: ./$(Build.Repository.Name)
+          - script: 'cp -r templates/extensions/helm/deployment_migration.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml'
         - ${{ if eq(parameters.coveragetest, 'true') }}:
           - bash: npm install
             displayName: Install
