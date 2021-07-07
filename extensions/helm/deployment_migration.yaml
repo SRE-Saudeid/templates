@@ -4,16 +4,16 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    deployment: {{environment}}-{{Name}}
-    app: {{environment}}-{{Name}}
+    deployment: migration-{{environment}}-{{Name}}
+    app: migration-{{environment}}-{{Name}}
   namespace : {{namespace}}
-  name: {{environment}}-{{Name}}
+  name: migration-{{environment}}-{{Name}}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      deployment: {{environment}}-{{Name}}
-      app: {{environment}}-{{Name}}
+      deployment: migration-{{environment}}-{{Name}}
+      app: migration-{{environment}}-{{Name}}
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -23,10 +23,10 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        deployment: {{environment}}-{{Name}}
-        app: {{environment}}-{{Name}}
+        deployment: migration-{{environment}}-{{Name}}
+        app: migration-{{environment}}-{{Name}}
     spec:
-      hostname: {{environment}}-{{Name}}
+      hostname: migration-{{environment}}-{{Name}}
       subdomain: local  
 #      affinity:
 #        nodeAffinity:
@@ -38,7 +38,7 @@ spec:
 #                values:
 #                - general
       containers:
-        - name: {{Name}}
+        - name: migration-{{Name}}
           image: gcr.io/saudeid-prd/{{namespace}}/{{Name}}:{{environment}}-{{BuildId}}
           imagePullPolicy: Always
           command: ["npm", "run"]
