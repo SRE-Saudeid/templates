@@ -90,11 +90,6 @@ jobs:
         - ${{ if eq(parameters.stage, 'Production') }}:
           - ${{ if eq(parameters.autoscale, 'true') }}:
             - script: cp -r templates/extensions/helm/hpa.yaml templates/helm/$(Environment.Name)/templates/
-        - task: Bash@3
-          inputs:
-            targetType: 'inline'
-            script: 'sed -i ''s/{{namespace}}/${{ parameters.namespace }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/*.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' $(Build.Repository.Name)/Dockerfile*' 
-            workingDirectory: '$(System.DefaultWorkingDirectory)'
         - ${{ if eq(parameters.nextjs, 'true') }}:
           - script: 'cp -r templates/extensions/helm/ingress.yaml templates/helm/$(Environment.Name)/templates/ingress.yaml'
           - task: Npm@1
@@ -104,6 +99,11 @@ jobs:
               workingDir: $(Build.Repository.Name)
           - script: npm run build
             workingDirectory: ./$(Build.Repository.Name)
+        - task: Bash@3
+          inputs:
+            targetType: 'inline'
+            script: 'sed -i ''s/{{namespace}}/${{ parameters.namespace }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/*.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' $(Build.Repository.Name)/Dockerfile*' 
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
         - ${{ if eq(parameters.coveragetest, 'true') }}:
           - bash: npm install
             displayName: Install
