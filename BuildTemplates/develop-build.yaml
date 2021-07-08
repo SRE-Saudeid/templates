@@ -20,6 +20,8 @@ parameters:
   default: []
 - name: nextjs
   default: []
+- name: migration
+  default: []
 - name: variables
   type: string
   default: ''
@@ -41,18 +43,23 @@ jobs:
         - checkout: templates
           clean: true
         - task: Kubernetes@1
+          displayName: Login Kubernetes GCP
           inputs:
             connectionType: 'Kubernetes Service Connection'
             kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
             namespace: '${{ parameters.namespace }}'
             command: 'login'
         - task: HelmInstaller@0
+          displayName: Helm Install
           inputs:
             helmVersion: '3.4.2'
             checkLatestHelmVersion: false
             installKubectl: true
+        - ${{ if eq(parameters.migration, 'true') }}:
+          - script: 'cp -r templates/extensions/helm/deployment_migration.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml'
         - ${{ if parameters.variables }}:
           - task: Bash@3
+            displayName: Variables
             inputs:
               targetType: 'inline'
               script: 'env |sort >> variables.env' 
@@ -64,6 +71,7 @@ jobs:
           - script: sed '/^-/d' -i env.env
             workingDirectory: '$(System.DefaultWorkingDirectory)'
           - task: Bash@3
+            displayName: Helm Deployment
             inputs:
               targetType: 'inline'
               script: 'cp -r templates/extensions/helm/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml'
@@ -83,22 +91,25 @@ jobs:
         - ${{ if eq(parameters.virtualservice, 'true') }}:
           - script: cp -r $(Build.Repository.Name)/virtualservice*.yaml templates/helm/$(Environment.Name)/templates/virtualservice.yaml
           - script: cp -r $(Build.Repository.Name)/service*.yaml templates/helm/$(Environment.Name)/templates/service.yaml
-        - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+        - ${{ if eq(parameters.stage, 'Production') }}:
           - ${{ if eq(parameters.autoscale, 'true') }}:
             - script: cp -r templates/extensions/helm/hpa.yaml templates/helm/$(Environment.Name)/templates/
-        - task: Bash@3
-          inputs:
-            targetType: 'inline'
-            script: 'sed -i ''s/{{namespace}}/${{ parameters.namespace }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/*.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' $(Build.Repository.Name)/Dockerfile*' 
-            workingDirectory: '$(System.DefaultWorkingDirectory)'
         - ${{ if eq(parameters.nextjs, 'true') }}:
+          - script: 'cp -r templates/extensions/helm/ingress.yaml templates/helm/$(Environment.Name)/templates/ingress.yaml'
           - task: Npm@1
+            displayName: NPM Install
             inputs:
               command: 'install'
               verbose: true
               workingDir: $(Build.Repository.Name)
           - script: npm run build
             workingDirectory: ./$(Build.Repository.Name)
+        - task: Bash@3
+          displayName: Tratamento Helm
+          inputs:
+            targetType: 'inline'
+            script: 'sed -i ''s/{{namespace}}/${{ parameters.namespace }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/*.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' $(Build.Repository.Name)/Dockerfile*' 
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
         - ${{ if eq(parameters.coveragetest, 'true') }}:
           - bash: npm install
             displayName: Install
@@ -147,6 +158,7 @@ jobs:
               TargetFolder: $(Build.BinariesDirectory)
               CleanTargetFolder: true
         - task: HelmDeploy@0
+          displayName: Helm Package
           inputs:
             command: 'package'
             chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
@@ -170,11 +182,6 @@ jobs:
               tags: |
                 $(Environment.Name)-$(Build.BuildId)
                 latest
-#        - task: PublishBuildArtifacts@1
-#          inputs:
-#            PathtoPublish: './$(Build.Repository.Name)'
-#            ArtifactName: 'out'
-#            publishLocation: 'Container'
         - task: PublishBuildArtifacts@1
           inputs:
             PathtoPublish: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
@@ -189,6 +196,7 @@ jobs:
             artifactName: 'helm'
             downloadPath: '$(System.DefaultWorkingDirectory)'
         - task: HelmDeploy@0
+          displayName: Helm Deploy
           inputs:
             connectionType: 'Kubernetes Service Connection'
             kubernetesServiceConnection: 'GCP - ${{ parameters.environment }}-Kubernetes'

@@ -1,0 +1,47 @@
+#teste
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    deployment: migration-{{environment}}-{{Name}}
+    app: migration-{{environment}}-{{Name}}
+  namespace : {{namespace}}
+  name: migration-{{environment}}-{{Name}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: migration-{{environment}}-{{Name}}
+      app: migration-{{environment}}-{{Name}}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        deployment: migration-{{environment}}-{{Name}}
+        app: migration-{{environment}}-{{Name}}
+    spec:
+      hostname: migration-{{environment}}-{{Name}}
+      subdomain: local  
+#      affinity:
+#        nodeAffinity:
+#          requiredDuringSchedulingIgnoredDuringExecution:
+#            nodeSelectorTerms:
+#            - matchExpressions:
+#              - key: nodepool
+#                operator: In
+#                values:
+#                - general
+      containers:
+        - name: migration-{{Name}}
+          image: gcr.io/saudeid-prd/{{namespace}}/{{Name}}:{{environment}}-{{BuildId}}
+          imagePullPolicy: Always
+          command: ["npm", "run"]
+          args: ["migrations:run"]
+          ports:
+          - containerPort: 80
