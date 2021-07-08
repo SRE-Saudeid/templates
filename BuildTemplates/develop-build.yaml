@@ -158,6 +158,7 @@ jobs:
               TargetFolder: $(Build.BinariesDirectory)
               CleanTargetFolder: true
         - task: HelmDeploy@0
+          displayName: Helm Package
           inputs:
             command: 'package'
             chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
@@ -181,11 +182,6 @@ jobs:
               tags: |
                 $(Environment.Name)-$(Build.BuildId)
                 latest
-#        - task: PublishBuildArtifacts@1
-#          inputs:
-#            PathtoPublish: './$(Build.Repository.Name)'
-#            ArtifactName: 'out'
-#            publishLocation: 'Container'
         - task: PublishBuildArtifacts@1
           inputs:
             PathtoPublish: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
@@ -200,6 +196,7 @@ jobs:
             artifactName: 'helm'
             downloadPath: '$(System.DefaultWorkingDirectory)'
         - task: HelmDeploy@0
+          displayName: Helm Deploy
           inputs:
             connectionType: 'Kubernetes Service Connection'
             kubernetesServiceConnection: 'GCP - ${{ parameters.environment }}-Kubernetes'
