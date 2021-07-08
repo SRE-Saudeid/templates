@@ -87,7 +87,7 @@ jobs:
         - ${{ if eq(parameters.virtualservice, 'true') }}:
           - script: cp -r $(Build.Repository.Name)/virtualservice*.yaml templates/helm/$(Environment.Name)/templates/virtualservice.yaml
           - script: cp -r $(Build.Repository.Name)/service*.yaml templates/helm/$(Environment.Name)/templates/service.yaml
-        - ${{ if contains(variables['Build.SourceBranchName'], 'release') }}:
+        - ${{ if eq(parameters.stage, 'Production') }}:
           - ${{ if eq(parameters.autoscale, 'true') }}:
             - script: cp -r templates/extensions/helm/hpa.yaml templates/helm/$(Environment.Name)/templates/
         - task: Bash@3
