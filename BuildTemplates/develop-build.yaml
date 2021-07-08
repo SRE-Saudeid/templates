@@ -43,12 +43,14 @@ jobs:
         - checkout: templates
           clean: true
         - task: Kubernetes@1
+          displayName: Login Kubernetes GCP
           inputs:
             connectionType: 'Kubernetes Service Connection'
             kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
             namespace: '${{ parameters.namespace }}'
             command: 'login'
         - task: HelmInstaller@0
+          displayName: Helm Install
           inputs:
             helmVersion: '3.4.2'
             checkLatestHelmVersion: false
@@ -57,6 +59,7 @@ jobs:
           - script: 'cp -r templates/extensions/helm/deployment_migration.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml'
         - ${{ if parameters.variables }}:
           - task: Bash@3
+            displayName: Variables
             inputs:
               targetType: 'inline'
               script: 'env |sort >> variables.env' 
@@ -68,6 +71,7 @@ jobs:
           - script: sed '/^-/d' -i env.env
             workingDirectory: '$(System.DefaultWorkingDirectory)'
           - task: Bash@3
+            displayName: Helm Deployment
             inputs:
               targetType: 'inline'
               script: 'cp -r templates/extensions/helm/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml'
@@ -93,6 +97,7 @@ jobs:
         - ${{ if eq(parameters.nextjs, 'true') }}:
           - script: 'cp -r templates/extensions/helm/ingress.yaml templates/helm/$(Environment.Name)/templates/ingress.yaml'
           - task: Npm@1
+            displayName: NPM Install
             inputs:
               command: 'install'
               verbose: true
@@ -100,6 +105,7 @@ jobs:
           - script: npm run build
             workingDirectory: ./$(Build.Repository.Name)
         - task: Bash@3
+          displayName: Tratamento Helm
           inputs:
             targetType: 'inline'
             script: 'sed -i ''s/{{namespace}}/${{ parameters.namespace }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/$(Environment.Name)/*.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' templates/helm/$(Environment.Name)/templates/*.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' $(Build.Repository.Name)/Dockerfile*' 
