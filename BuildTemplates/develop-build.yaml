@@ -69,9 +69,7 @@ jobs:
           - script: sed '/Relatedworkitems/d' -i env.env
             workingDirectory: '$(System.DefaultWorkingDirectory)'
           - script: sed '/^-/d' -i env.env
-            workingDirectory: '$(System.DefaultWorkingDirectory)'
-          - script: cat env.env
-            workingDirectory: '$(System.DefaultWorkingDirectory)'            
+            workingDirectory: '$(System.DefaultWorkingDirectory)'      
           - task: Bash@3
             displayName: Helm Deployment
             inputs:
