@@ -1,11 +1,11 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: {{environment}}-{{Name}}-gateway
-  namespace: {{namespace}}
+  name: {{ include "teste-helm.environment" . }}-{{ include "teste-helm.name" . }}
+  namespace: {{ include "teste-helm.namespace" . }}
 spec:
   selector:
-    istio: ingressgateway # use istio default controller
+    istio: ingressgateway
   servers:
   - port:
       number: 80

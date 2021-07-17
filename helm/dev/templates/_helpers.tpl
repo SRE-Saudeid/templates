@@ -1,9 +1,36 @@
-{{/* vim: set filetype=mustache: */}}
+{{/*
+Create chart release.
+*/}}
+{{- define "teste-helm.release" -}}
+{{- printf .Values.app.release }}
+{{- end }}
+
+{{/*
+Create chart namespace.
+*/}}
+{{- define "teste-helm.namespace" -}}
+{{- printf .Values.app.namespace }}
+{{- end }}
+
+{{/*
+Create chart repository.
+*/}}
+{{- define "teste-helm.repository" -}}
+{{- printf .Values.image.repository }}
+{{- end }}
+
+{{/*
+Create chart environment.
+*/}}
+{{- define "teste-helm.environment" -}}
+{{- printf .Values.app.environment }}
+{{- end }}
+
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "mysql.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- define "teste-helm.name" -}}
+{{- printf .Values.app.name | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
@@ -11,32 +38,27 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "mysql.fullname" -}}
-{{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
-{{- if contains $name .Release.Name }}
-{{- .Release.Name | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
-{{- end }}
-{{- end }}
+{{- define "teste-helm.fullname" -}}
+{{- printf .Values.app.fullname | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
-Create chart name and version as used by the chart label.
+Create a default fully qualified app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+If release name contains chart name it will be used as a full name.
 */}}
-{{- define "mysql.chart" -}}
-{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- define "teste-helm.hosts.hosts" -}}
+{{- printf .Values.app.name }}
 {{- end }}
 
 {{/*
 Common labels
+{{ include "teste-helm.selectorLabels" . }}
 */}}
-{{- define "mysql.labels" -}}
-helm.sh/chart: {{ include "mysql.chart" . }}
-{{ include "mysql.selectorLabels" . }}
+{{- define "teste-helm.labels" -}}
+helm.sh/chart: {{ include "teste-helm.fullname" . }}
+deployment: {{ include "teste-helm.fullname" . }}
+app: {{ include "teste-helm.fullname" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,18 +67,20 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 
 {{/*
 Selector labels
-*/}}
-{{- define "mysql.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "mysql.name" . }}
+app.kubernetes.io/name: {{ include "teste-helm.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+*/}}
+{{- define "teste-helm.selectorLabels" -}}
+deployment: {{ include "teste-helm.release" . }}
+app: {{ include "teste-helm.fullname" . }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "mysql.serviceAccountName" -}}
+{{- define "teste-helm.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "mysql.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "teste-helm.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
