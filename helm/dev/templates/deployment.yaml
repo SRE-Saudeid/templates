@@ -41,34 +41,5 @@ spec:
         - name: {{Name}}
           image: gcr.io/saudeid-prd/{{namespace}}/{{Name}}:{{environment}}-{{BuildId}}
           imagePullPolicy: Always
-          {{- if eq .Values.app.stage "Development" }}
-          env:
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "dev"
-          - name: NODE_ENV
-            value: "dev"
-          {{- end }}
-          {{- if eq .Values.app.stage "Homologation" }}
-          env:
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "hml"
-          - name: NODE_ENV
-            value: "hml"
-          {{- end }}
-          {{- if eq .Values.app.stage "Canary" }}
-          env:
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "prod"
-          - name: NODE_ENV
-            value: "prod"
-          {{- end }}
-          {{- if eq .Values.app.stage "Production" }}
-          env:
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "prod"
-          - name: NODE_ENV
-            value: "prod"
-          {{- end }}
-          {{- if .Values.configmap.enabled }}
           ports:
           - containerPort: 80
