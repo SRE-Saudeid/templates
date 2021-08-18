@@ -15,12 +15,41 @@ jobs:
         steps:
         - checkout: self
         - checkout: templates
+        - task: Kubernetes@1
+          displayName: Login Kubernetes GCP
+          inputs:
+            connectionType: 'Kubernetes Service Connection'
+            kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
+            namespace: '${{ parameters.namespace }}'
+            command: 'login'
+        - task: Bash@3
+          displayName: Variables
+          inputs:
+            targetType: 'inline'
+            script: 'env |sort >> variables.env' 
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+        - script: sed -r 's/ç/c/g;s/é/e/g;s/ã/a/g;s/\s+//g;s/#/-/g' variables.env >> env.env
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
+        - script: sed '/Relatedworkitems/d' -i env.env
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
+        - script: sed '/^-/d' -i env.env
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
+        - script: sed -i '$ d' env.env  
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
+        - task: Kubernetes@1
+          displayName: 'Create ConfigMap for /data'
+          inputs:
+            kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
+            namespace: '${{ parameters.namespace }}'
+            forceUpdateConfigMap: true
+            configMapName: ${{ parameters.app }}-config
+            configMapArguments: --from-env-file=env.env
         - task: Bash@3
           inputs:
             targetType: 'inline'
-            script: 'sed -i ''s|{{crontime}}|${{ parameters.cronjob }}|g'' templates/helm/cronjob.yaml  && sed -i ''s/{{namespace}}/${{ parameters.namespace }}/g'' templates/helm/cronjob.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/cronjob.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' templates/helm/cronjob.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' templates/helm/cronjob.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' $(Build.Repository.Name)/Dockerfile' 
+            script: 'sed -i ''s|{{crontime}}|${{ parameters.cronjob }}|g'' templates/cronjob.yaml  && sed -i ''s/{{namespace}}/${{ parameters.namespace }}/g'' templates/cronjob.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/cronjob.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' templates/cronjob.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' templates/cronjob.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' $(Build.Repository.Name)/Dockerfile' 
             workingDirectory: '$(System.DefaultWorkingDirectory)'
-        - script: cat templates/helm/cronjob.yaml 
+        - script: cat templates/cronjob.yaml 
         - task: Docker@2
           inputs:
             containerRegistry: 'SaudeID-PRD Container Registry'
@@ -36,4 +65,4 @@ jobs:
             kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
             namespace: ${{ parameters.namespace }}
             command: 'apply'
-            arguments: '-f $(System.DefaultWorkingDirectory)/templates/helm/cronjob.yaml'
+            arguments: '-f $(System.DefaultWorkingDirectory)/templates/cronjob.yaml'
