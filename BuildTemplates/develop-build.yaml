@@ -57,35 +57,34 @@ jobs:
             installKubectl: true
         - ${{ if eq(parameters.migration, 'true') }}:
           - script: 'cp -r templates/extensions/helm/deployment_migration.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml'
-        - ${{ if parameters.variables }}:
-          - task: Bash@3
-            displayName: Variables
-            inputs:
-              targetType: 'inline'
-              script: 'env |sort >> variables.env' 
-              workingDirectory: '$(System.DefaultWorkingDirectory)'
-          - script: sed -r 's/ç/c/g;s/é/e/g;s/ã/a/g;s/\s+//g;s/#/-/g' variables.env >> env.env
+        - task: Bash@3
+          displayName: Variables
+          inputs:
+            targetType: 'inline'
+            script: 'env |sort >> variables.env' 
             workingDirectory: '$(System.DefaultWorkingDirectory)'
-          - script: sed '/Relatedworkitems/d' -i env.env
-            workingDirectory: '$(System.DefaultWorkingDirectory)'
-          - script: sed '/^-/d' -i env.env
-            workingDirectory: '$(System.DefaultWorkingDirectory)'      
-          - task: Bash@3
-            displayName: Helm Deployment
-            inputs:
-              targetType: 'inline'
-              script: 'cp -r templates/extensions/helm/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml'
-              workingDirectory: '$(System.DefaultWorkingDirectory)'   
-          - script: mv $(Build.Repository.Name)/next.config.${{ parameters.environment }}.js $(Build.Repository.Name)/next.config.js
-            continueOnError: true
-          - task: Kubernetes@1
-            displayName: 'Create ConfigMap for /data'
-            inputs:
-              kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
-              namespace: '${{ parameters.namespace }}'
-              forceUpdateConfigMap: true
-              configMapName: ${{ parameters.app }}-config
-              configMapArguments: --from-env-file=env.env
+        - script: sed -r 's/ç/c/g;s/é/e/g;s/ã/a/g;s/\s+//g;s/#/-/g' variables.env >> env.env
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
+        - script: sed '/Relatedworkitems/d' -i env.env
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
+        - script: sed '/^-/d' -i env.env
+          workingDirectory: '$(System.DefaultWorkingDirectory)'      
+        - task: Bash@3
+          displayName: Helm Deployment
+          inputs:
+            targetType: 'inline'
+            script: 'cp -r templates/extensions/helm/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'   
+        - script: mv $(Build.Repository.Name)/next.config.${{ parameters.environment }}.js $(Build.Repository.Name)/next.config.js
+          continueOnError: true
+        - task: Kubernetes@1
+          displayName: 'Create ConfigMap for /data'
+          inputs:
+            kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
+            namespace: '${{ parameters.namespace }}'
+            forceUpdateConfigMap: true
+            configMapName: ${{ parameters.app }}-config
+            configMapArguments: --from-env-file=env.env
         - script: mv $(Build.Repository.Name)/next.config.${{ parameters.environment }}.js $(Build.Repository.Name)/next.config.js
           continueOnError: true
         - ${{ if eq(parameters.deploymentconfig, 'true') }}:
