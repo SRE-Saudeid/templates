@@ -15,6 +15,13 @@ jobs:
         steps:
         - checkout: self
         - checkout: templates
+        - task: Kubernetes@1
+          displayName: Login Kubernetes GCP
+          inputs:
+            connectionType: 'Kubernetes Service Connection'
+            kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
+            namespace: '${{ parameters.namespace }}'
+            command: 'login'
         - task: Bash@3
           displayName: Variables
           inputs:
