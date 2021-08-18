@@ -33,7 +33,9 @@ jobs:
         - script: sed '/Relatedworkitems/d' -i env.env
           workingDirectory: '$(System.DefaultWorkingDirectory)'
         - script: sed '/^-/d' -i env.env
-          workingDirectory: '$(System.DefaultWorkingDirectory)'  
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
+        - script: sed -i '$ d' env.env  
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
         - script: cat env.env    
         - task: Kubernetes@1
           displayName: 'Create ConfigMap for /data'
