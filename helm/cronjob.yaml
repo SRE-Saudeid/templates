@@ -17,4 +17,8 @@ spec:
           - name: {{environment}}-{{Name}}
             image: gcr.io/saudeid-prd/{{namespace}}/{{Name}}:{{environment}}-{{BuildId}}
             imagePullPolicy: Always
+            envFrom:
+            # The ConfigMap we want to use
+            - configMapRef:
+                name: {{Name}}-config
           restartPolicy: Never
