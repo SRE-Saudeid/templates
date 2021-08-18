@@ -1,10 +1,10 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: {{environment}}-{{Name}}
-  namespace: {{namespace}}
+  name: {{ include "teste-helm.environment" . }}-{{ include "teste-helm.name" . }}
+  namespace: {{ include "teste-helm.namespace" . }}
 spec:
-  host: {{environment}}-{{Name}}
+  host: {{ include "teste-helm.environment" . }}-{{ include "teste-helm.name" . }}
   trafficPolicy:
     outlierDetection:
       consecutiveErrors: 7
