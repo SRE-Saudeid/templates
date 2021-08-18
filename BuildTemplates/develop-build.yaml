@@ -185,7 +185,7 @@ jobs:
             kubernetesServiceConnection: 'GCP - ${{ parameters.environment }}-Kubernetes'
             namespace: '${{ parameters.namespace }}'
             command: 'upgrade'
-            arguments: '--set app.name=${{ parameters.app }} --set app.namespace=${{ parameters.namespace }} --set app.environment=${{ parameters.environment }} --set image.repository=gcr.io/saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}:${{ parameters.environment }}-$(Build.BuildId) --set autoscaling.enabled=${{ parameters.autoscale }} --set ingress.enabled=${{ parameters.nextjs }} --set app.release=${{ parameters.release }} --set configmap.enabled=${{ parameters.variables }}'
+            arguments: ' --set app.fullname=${{ parameters.release }} --set app.name=${{ parameters.app }} --set app.namespace=${{ parameters.namespace }} --set app.environment=${{ parameters.environment }} --set image.repository=gcr.io/saudeid-prd/${{ parameters.namespace }}/${{ parameters.app }}:${{ parameters.environment }}-$(Build.BuildId) --set autoscaling.enabled=${{ parameters.autoscale }} --set ingress.enabled=${{ parameters.nextjs }} --set app.release=${{ parameters.release }} --set configmap.enabled=${{ parameters.variables }}'
             chartType: 'FilePath'
             chartPath: '$(System.DefaultWorkingDirectory)/helm'
             releaseName: '${{ parameters.release }}'
