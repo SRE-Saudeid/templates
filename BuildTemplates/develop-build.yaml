@@ -55,47 +55,35 @@ jobs:
             helmVersion: '3.4.2'
             checkLatestHelmVersion: false
             installKubectl: true
-#        - ${{ if eq(parameters.migration, 'true') }}:
-#          - script: 'cp -r templates/extensions/helm/deployment_migration.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml'
-        - ${{ if parameters.variables }}:
-          - task: Bash@3
-            displayName: Variables
-            inputs:
-              targetType: 'inline'
-              script: 'env |sort >> variables.env' 
-              workingDirectory: '$(System.DefaultWorkingDirectory)'
-          - script: sed -r 's/ç/c/g;s/é/e/g;s/ã/a/g;s/\s+//g;s/#/-/g' variables.env >> env.env
+        - task: Bash@3
+          displayName: Variables
+          inputs:
+            targetType: 'inline'
+            script: 'env |sort >> variables.env' 
             workingDirectory: '$(System.DefaultWorkingDirectory)'
-          - script: sed '/Relatedworkitems/d' -i env.env
-            workingDirectory: '$(System.DefaultWorkingDirectory)'
-          - script: sed '/^-/d' -i env.env
-            workingDirectory: '$(System.DefaultWorkingDirectory)'      
-          - task: Bash@3
-            displayName: Helm Deployment
-            inputs:
-              targetType: 'inline'
-              script: 'cp -r templates/extensions/helm/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml'
-              workingDirectory: '$(System.DefaultWorkingDirectory)'   
-          - script: mv $(Build.Repository.Name)/next.config.${{ parameters.environment }}.js $(Build.Repository.Name)/next.config.js
-            continueOnError: true
-          - task: Kubernetes@1
-            displayName: 'Create ConfigMap for /data'
-            inputs:
-              kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
-              namespace: '${{ parameters.namespace }}'
-              forceUpdateConfigMap: true
-              configMapName: ${{ parameters.app }}-config
-              configMapArguments: --from-env-file=env.env
+        - script: sed -r 's/ç/c/g;s/é/e/g;s/ã/a/g;s/\s+//g;s/#/-/g' variables.env >> env.env
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
+        - script: sed '/Relatedworkitems/d' -i env.env
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
+        - script: sed '/^-/d' -i env.env
+          workingDirectory: '$(System.DefaultWorkingDirectory)'      
+        - script: mv $(Build.Repository.Name)/next.config.${{ parameters.environment }}.js $(Build.Repository.Name)/next.config.js
+          continueOnError: true
+        - task: Kubernetes@1
+          displayName: 'Create ConfigMap for /data'
+          inputs:
+            kubernetesServiceEndpoint: 'GCP - ${{ parameters.environment }}-Kubernetes'
+            namespace: '${{ parameters.namespace }}'
+            forceUpdateConfigMap: true
+            configMapName: ${{ parameters.app }}-config
+            configMapArguments: --from-env-file=env.env
         - script: mv $(Build.Repository.Name)/next.config.${{ parameters.environment }}.js $(Build.Repository.Name)/next.config.js
           continueOnError: true
         - ${{ if eq(parameters.deploymentconfig, 'true') }}:
-          - script: cp -r $(Build.Repository.Name)/deployment.yaml templates/helm/$(Environment.Name)/templates/deployment.yaml
+          - script: cp -r $(Build.Repository.Name)/deployment.yaml templates/helm/templates/deployment.yaml
         - ${{ if eq(parameters.virtualservice, 'true') }}:
-          - script: cp -r $(Build.Repository.Name)/virtualservice*.yaml templates/helm/$(Environment.Name)/templates/virtualservice.yaml
-          - script: cp -r $(Build.Repository.Name)/service*.yaml templates/helm/$(Environment.Name)/templates/service.yaml
-        - ${{ if eq(parameters.stage, 'Production') }}:
-          - ${{ if eq(parameters.autoscale, 'true') }}:
-            - script: cp -r templates/extensions/helm/hpa.yaml templates/helm/$(Environment.Name)/templates/
+          - script: cp -r $(Build.Repository.Name)/virtualservice*.yaml templates/helm/templates/virtualservice.yaml
+          - script: cp -r $(Build.Repository.Name)/service*.yaml templates/helm/templates/service.yaml
         - ${{ if eq(parameters.nextjs, 'true') }}:
           - task: Npm@1
             displayName: NPM Install
@@ -156,7 +144,7 @@ jobs:
           displayName: Helm Package
           inputs:
             command: 'package'
-            chartPath: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
+            chartPath: '$(System.DefaultWorkingDirectory)/templates/helm'
         - ${{ if eq(parameters.deploymentconfig, 'false') }}:
           - task: Docker@2
             inputs:
@@ -179,7 +167,7 @@ jobs:
                 latest
         - task: PublishBuildArtifacts@1
           inputs:
-            PathtoPublish: '$(System.DefaultWorkingDirectory)/templates/helm/$(Environment.Name)'
+            PathtoPublish: '$(System.DefaultWorkingDirectory)/templates/helm'
             ArtifactName: 'helm'
             publishLocation: 'Container'
       deploy:
