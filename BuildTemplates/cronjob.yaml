@@ -47,9 +47,9 @@ jobs:
         - task: Bash@3
           inputs:
             targetType: 'inline'
-            script: 'sed -i ''s|{{crontime}}|${{ parameters.cronjob }}|g'' templates/helm/cronjob.yaml  && sed -i ''s/{{namespace}}/${{ parameters.namespace }}/g'' templates/helm/cronjob.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/helm/cronjob.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' templates/helm/cronjob.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' templates/helm/cronjob.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' $(Build.Repository.Name)/Dockerfile' 
+            script: 'sed -i ''s|{{crontime}}|${{ parameters.cronjob }}|g'' templates/cronjob.yaml  && sed -i ''s/{{namespace}}/${{ parameters.namespace }}/g'' templates/cronjob.yaml && sed -i ''s/{{Name}}/${{ parameters.app }}/g'' templates/cronjob.yaml && sed -i ''s/{{BuildId}}/$(Build.BuildId)/g'' templates/cronjob.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' templates/cronjob.yaml && sed -i ''s/{{environment}}/$(Environment.Name)/g'' $(Build.Repository.Name)/Dockerfile' 
             workingDirectory: '$(System.DefaultWorkingDirectory)'
-        - script: cat templates/helm/cronjob.yaml 
+        - script: cat templates/cronjob.yaml 
         - task: Docker@2
           inputs:
             containerRegistry: 'SaudeID-PRD Container Registry'
