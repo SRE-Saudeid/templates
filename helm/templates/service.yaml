@@ -9,11 +9,11 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.http }}
-      targetPort: http
+      targetPort: {{ .Values.service.http }}
       protocol: TCP
       name: http
     - port: {{ .Values.service.https }}
-      targetPort: http
+      targetPort: {{ .Values.service.http }}
       protocol: TCP
       name: https
   selector:
