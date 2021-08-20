@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-apiVersion: networking.k8s.io/v1 
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   finalizers:
@@ -7,14 +7,25 @@ metadata:
   name: ingress-{{ include "teste-helm.name" . }}
   namespace: {{ include "teste-helm.namespace" . }}
 spec:
-  rules:
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ include "teste-helm.environment" . }}-{{ include "teste-helm.name" . }}
-                port:
-                  number: 443
+  backend:
+    serviceName: {{ include "teste-helm.environment" . }}-{{ include "teste-helm.name" . }}
+    servicePort: 443
+#apiVersion: networking.k8s.io/v1 
+#kind: Ingress
+#metadata:
+#  finalizers:
+#  - networking.gke.io/ingress-finalizer-V2
+#  name: ingress-{{ include "teste-helm.name" . }}
+#  namespace: {{ include "teste-helm.namespace" . }}
+#spec:
+#  rules:
+#    - http:
+#        paths:
+#          - path: /
+#            pathType: Prefix
+#            backend:
+#              service:
+#                name: {{ include "teste-helm.environment" . }}-{{ include "teste-helm.name" . }}
+#                port:
+#                  number: 443
 {{- end }}
