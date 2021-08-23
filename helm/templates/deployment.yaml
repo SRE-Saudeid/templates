@@ -50,11 +50,11 @@ spec:
           #   httpGet:
           #     path: /
           #     port: http
-          {{- if eq .Values.app.stage "Development" }}
-          env:
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "dev"
-          {{- end }}
+#          {{- if eq .Values.app.stage "Development" }}
+#          env:
+#          - name: ASPNETCORE_ENVIRONMENT
+#            value: "dev"
+#          {{- end }}
           {{- if eq .Values.app.stage "Homologation" }}
           env:
           - name: ASPNETCORE_ENVIRONMENT
