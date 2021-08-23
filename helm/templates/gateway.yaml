@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: {{ include "teste-helm.environment" . }}-{{ include "teste-helm.name" . }}
+  name: {{ include "teste-helm.environment" . }}-{{ include "teste-helm.name" . }}-gateway
   namespace: {{ include "teste-helm.namespace" . }}
 spec:
   selector:
