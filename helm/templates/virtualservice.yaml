@@ -11,7 +11,7 @@ spec:
   http:
   - match:
     - uri:
-        prefix: "/{{ include "teste-helm.environment" . }}-{{ include "teste-helm.name" . }}/"
+        prefix: "/{{ include "teste-helm.name" . }}/"
     rewrite:
       uri: "/"
     route:
