@@ -50,26 +50,6 @@ spec:
           #   httpGet:
           #     path: /
           #     port: http
-#          {{- if eq .Values.app.stage "Development" }}
-#          env:
-#          - name: ASPNETCORE_ENVIRONMENT
-#            value: "dev"
-#          {{- end }}
-          {{- if eq .Values.app.stage "Homologation" }}
-          env:
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "hml"
-          {{- end }}
-          {{- if eq .Values.app.stage "Canary" }}
-          env:
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "prod"
-          {{- end }}
-          {{- if eq .Values.app.stage "Production" }}
-          env:
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "prod"
-          {{- end }}
           {{- if .Values.configmap.enabled }}
           envFrom:
           - configMapRef:
