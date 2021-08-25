@@ -26,10 +26,10 @@ parameters:
   type: string
   default: ''
 - name: command
-  type: string
+  type: array
   default: ''
 - name: args
-  type: string
+  type: array
   default: ''
 
 
