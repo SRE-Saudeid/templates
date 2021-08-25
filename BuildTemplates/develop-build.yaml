@@ -25,6 +25,12 @@ parameters:
 - name: variables
   type: string
   default: ''
+- name: command
+  type: string
+  default: ''
+- name: args
+  type: string
+  default: ''
 
 
 jobs:
