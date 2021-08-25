@@ -41,6 +41,10 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+entrypoint:
+  command:
+  args:
+
 service:
   type: ClusterIP
   http: 80
