@@ -28,10 +28,10 @@ parameters:
   type: string
   default: ''
 - name: command
-  type: array
+  type: string
   default: ''
 - name: args
-  type: array
+  type: string
   default: ''
 
 stages:
