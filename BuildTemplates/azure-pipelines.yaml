@@ -30,7 +30,7 @@ parameters:
 - name: command
   type: string
   default: ''
-- name: arg
+- name: args
   type: string
   default: ''
 
