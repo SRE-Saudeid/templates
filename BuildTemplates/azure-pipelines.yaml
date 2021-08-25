@@ -27,6 +27,12 @@ parameters:
 - name: variables
   type: string
   default: ''
+- name: command
+  type: string
+  default: ''
+- name: arg
+  type: string
+  default: ''
 
 stages:
 - stage: Development
@@ -49,6 +55,8 @@ stages:
         coveragetest: ${{ parameters.coveragetest }}
         autoscale: ${{ parameters.autoscale }}
         variables: ${{ parameters.variables }}
+        command: ${{ parameters.command }}
+        args: ${{ parameters.args }}
 
 #- ${{ if contains(variables['Build.SourceBranchName'], 'release*') }}:        
 - stage: Quality
@@ -71,6 +79,8 @@ stages:
         coveragetest: ${{ parameters.coveragetest }}
         autoscale: ${{ parameters.autoscale }}
         variables: ${{ parameters.variables }}
+        command: ${{ parameters.command }}
+        args: ${{ parameters.args }}
 
 - stage: Production
   ${{ if  parameters.variables }}:
@@ -92,3 +102,5 @@ stages:
         coveragetest: ${{ parameters.coveragetest }}
         autoscale: ${{ parameters.autoscale }}
         variables: ${{ parameters.variables }}
+        command: ${{ parameters.command }}
+        args: ${{ parameters.args }}
