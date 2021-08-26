@@ -53,11 +53,9 @@ spec:
           #   httpGet:
           #     path: /
           #     port: http
-          {{- if .Values.configmap.enabled }}
           envFrom:
           - configMapRef:
               name: {{ include "teste-helm.name" . }}-config
-          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
