@@ -73,8 +73,6 @@ jobs:
           workingDirectory: '$(System.DefaultWorkingDirectory)'
         - script: sed '/^-/d' -i env.env
           workingDirectory: '$(System.DefaultWorkingDirectory)'      
-        - script: mv $(Build.Repository.Name)/next.config.${{ parameters.environment }}.js $(Build.Repository.Name)/next.config.js
-          continueOnError: true
         - task: Kubernetes@1
           displayName: 'Create ConfigMap for /data'
           inputs:
@@ -83,8 +81,6 @@ jobs:
             forceUpdateConfigMap: true
             configMapName: ${{ parameters.app }}-config
             configMapArguments: --from-env-file=env.env
-        - script: mv $(Build.Repository.Name)/next.config.${{ parameters.environment }}.js $(Build.Repository.Name)/next.config.js
-          continueOnError: true
         - ${{ if eq(parameters.deploymentconfig, 'true') }}:
           - script: cp -r $(Build.Repository.Name)/deployment.yaml templates/helm/templates/deployment.yaml
         - ${{ if eq(parameters.virtualservice, 'true') }}:
